@@ -1,6 +1,6 @@
 # sorbet-coerce
 
-> Type coercion with [Sorbet](https://sorbet.org)
+Type coercion for [Sorbet](https://sorbet.org)
 
 ## Installation
 1. Follow the steps [here](https://sorbet.org/docs/adopting) to set up the latest version of Sorbet and run `srb tc`.
@@ -16,6 +16,13 @@ gem 'sorbet-coerce'
 ```
 
 ## Usage
+
+`T::Coerce` takes a valid sorbet type and coerce the input value into that type. It'll return a statically-typed object or throws `T::CoercionError` error if the coercion fails.
+```ruby
+converted = T::Coerce[<Type>].new.from(<value>)
+
+T.reveal_type(converted) # <Type>
+```
 
 - Simple Type
 
