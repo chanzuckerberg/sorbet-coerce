@@ -1,6 +1,6 @@
 # sorbet-coerce
 
-Type coercion for [Sorbet](https://sorbet.org)
+> A type coercion lib works with [Sorbet](https://sorbet.org)'s static type checker and type definitions; raises an error if the coercion fails.
 
 ## Installation
 1. Follow the steps [here](https://sorbet.org/docs/adopting) to set up the latest version of Sorbet and run `srb tc`.
@@ -83,6 +83,17 @@ end
 T::Coerce[Param].new.from({id: '1'})
 # => <Param id=1, role="wizard">
 ```
+
+### Supported Types
+- Simple Types
+- Custom Types: If the values can be coerced by `.new`
+- `T::Array`
+- `T.nilable(<supported type>)`
+- Subclasses of `T::Struct`
+
+We don't support
+- `T::Hash` (currently)
+- `T.any(<supported type>, ...)`: A union type other than `T.nilable`
 
 ## Contributing
 
