@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.files         = Dir.glob('lib/**/*')
 
-  s.required_ruby_version = ['>= 2.3.0']
+  s.required_ruby_version = ['>= 2.5.0']
 
   s.add_dependency 'sorbet', '~> 0.4.4704'
 
