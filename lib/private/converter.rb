@@ -1,6 +1,9 @@
 # typed: strict
 require 'safe_type'
 require 'sorbet-runtime'
+require 'polyfill'
+
+using Polyfill(Hash: %w[#slice])
 
 module T; end
 

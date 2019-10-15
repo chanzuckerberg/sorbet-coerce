@@ -11,9 +11,11 @@ module T
         define_method(:to_s) { "#{name}#[#{type.to_s}]" }
 
         define_method(:from) do |args|
-          T.send('let', send('_convert', args, type), type)
-        rescue TypeError
-          raise CoercionError.new(args, type)
+          begin
+            T.send('let', send('_convert', args, type), type)
+          rescue TypeError
+            raise CoercionError.new(args, type)
+          end
         end
       end
     end

@@ -20,3 +20,4 @@ else
 end
 
 gem 'safe_type', '>= 1.1.1'
+gem 'polyfill', '~> 1.8'
