@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-support/all/rspec-support.rbi
 #
-# rspec-support-3.8.3
+# rspec-support-3.9.0
 module RSpec
   extend RSpec::Support::Warnings
 end
@@ -155,7 +155,6 @@ class RSpec::Support::ObjectFormatter::InspectableItem < Struct
   def inspect; end
   def pretty_print(pp); end
   def self.[](*arg0); end
-  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
   def text; end
@@ -170,7 +169,6 @@ class RSpec::Support::ObjectFormatter::BaseInspector < Struct
   def pretty_print(pp); end
   def self.[](*arg0); end
   def self.can_inspect?(_object); end
-  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end

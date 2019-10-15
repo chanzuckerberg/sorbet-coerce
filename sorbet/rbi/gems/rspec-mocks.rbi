@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-mocks/all/rspec-mocks.rbi
 #
-# rspec-mocks-3.8.2
+# rspec-mocks-3.9.0
 module RSpec
 end
 module RSpec::Mocks
@@ -236,7 +236,6 @@ class RSpec::Mocks::Proxy::SpecificMessage < Struct
   def object; end
   def object=(_); end
   def self.[](*arg0); end
-  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -333,6 +332,7 @@ class RSpec::Mocks::MessageExpectation
   def once(&block); end
   def ordered(&block); end
   def thrice(&block); end
+  def time(&block); end
   def times(&block); end
   def to_s; end
   def twice(&block); end
