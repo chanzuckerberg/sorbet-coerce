@@ -5,6 +5,8 @@
 
 A type coercion lib works with [Sorbet](https://sorbet.org)'s static type checker and type definitions; raises an error if the coercion fails.
 
+It provides a simple and generic way of coercing types in a sorbet-typed project. It is particularly useful when we're dealing with external API responses and controller parameters.
+
 ## Installation
 1. Follow the steps [here](https://sorbet.org/docs/adopting) to set up the latest version of Sorbet and run `srb tc`.
 2. Add `sorbet-coerce` to your Gemfile and install them with `Bundler`.
