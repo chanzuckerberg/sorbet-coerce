@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name          = %q{sorbet-coerce}
-  s.version       = "0.0.1"
+  s.version       = "0.1.0"
   s.date          = %q{2019-10-04}
-  s.summary       = %q{Type coercion with Sorbet}
+  s.summary       = %q{A type coercion lib works with Sorbet's static type checker and type definitions; raises an error if the coercion fails.}
   s.authors       = ["Chan Zuckerberg Initiative"]
   s.email         = "opensource@chanzuckerberg.com"
   s.homepage      = "https://github.com/chanzuckerberg/sorbet-coerce"
