@@ -1,4 +1,5 @@
 # sorbet-coerce
+[![codecov](https://codecov.io/gh/chanzuckerberg/sorbet-coerce/branch/master/graph/badge.svg)](https://codecov.io/gh/chanzuckerberg/sorbet-coerce)
 
 Type coercion for [Sorbet](https://sorbet.org)
 
