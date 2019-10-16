@@ -1,6 +1,6 @@
 # sorbet-coerce
 
-> A type coercion lib works with [Sorbet](https://sorbet.org)'s static type checker and type definitions; raises an error if the coercion fails.
+A type coercion lib works with [Sorbet](https://sorbet.org)'s static type checker and type definitions; raises an error if the coercion fails.
 
 ## Installation
 1. Follow the steps [here](https://sorbet.org/docs/adopting) to set up the latest version of Sorbet and run `srb tc`.
@@ -24,7 +24,21 @@ converted = T::Coerce[<Type>].new.from(<value>)
 T.reveal_type(converted) # <Type>
 ```
 
-- Simple Type
+
+
+### Supported Types
+- Simple Types
+- Custom Types: If the values can be coerced by `.new`
+- `T.nilable(<supported type>)`
+- `T::Array[<supported type>]`
+- Subclasses of `T::Struct`
+
+We don't support
+- `T::Hash` (currently)
+- `T.any(<supported type>, ...)`: A union type other than `T.nilable`
+
+### Examples
+- Simple Types
 
 ```ruby
 T::Coerce[Date].new.from('2019-08-05')
@@ -83,17 +97,6 @@ end
 T::Coerce[Param].new.from({id: '1'})
 # => <Param id=1, role="wizard">
 ```
-
-### Supported Types
-- Simple Types
-- Custom Types: If the values can be coerced by `.new`
-- `T::Array`
-- `T.nilable(<supported type>)`
-- Subclasses of `T::Struct`
-
-We don't support
-- `T::Hash` (currently)
-- `T.any(<supported type>, ...)`: A union type other than `T.nilable`
 
 ## Contributing
 
