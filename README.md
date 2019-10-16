@@ -1,4 +1,6 @@
 # sorbet-coerce
+[![Gem Version](https://badge.fury.io/rb/sorbet-coerce.svg)](https://badge.fury.io/rb/sorbet-coerce)
+[![Build Status](https://travis-ci.com/chanzuckerberg/sorbet-coerce.svg?branch=master)](https://travis-ci.com/chanzuckerberg/sorbet-coerce)
 [![codecov](https://codecov.io/gh/chanzuckerberg/sorbet-coerce/branch/master/graph/badge.svg)](https://codecov.io/gh/chanzuckerberg/sorbet-coerce)
 
 Type coercion for [Sorbet](https://sorbet.org)
