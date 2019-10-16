@@ -30,15 +30,9 @@ end
 
 BasicObject::BasicObject = BasicObject
 
-class BasicSocket
-  def read_nonblock(len, str=T.unsafe(nil), exception: T.unsafe(nil)); end
-end
-
 class BigDecimal
-  def clone(); end
   EXCEPTION_NaN = ::T.let(nil, ::T.untyped)
   SIGN_NaN = ::T.let(nil, ::T.untyped)
-  VERSION = ::T.let(nil, ::T.untyped)
 end
 
 class BigDecimal
@@ -220,20 +214,6 @@ class Bundler::Fetcher
   def self.redirect_limit=(redirect_limit); end
 end
 
-module Bundler::FileUtils
-  VERSION = ::T.let(nil, ::T.untyped)
-end
-
-class Bundler::FileUtils::Entry_
-  def link(dest); end
-end
-
-module Bundler::FileUtils
-  def self.cp_lr(src, dest, noop: T.unsafe(nil), verbose: T.unsafe(nil), dereference_root: T.unsafe(nil), remove_destination: T.unsafe(nil)); end
-
-  def self.link_entry(src, dest, dereference_root=T.unsafe(nil), remove_destination=T.unsafe(nil)); end
-end
-
 class Bundler::GemHelper
   def allowed_push_host(); end
 
@@ -275,9 +255,7 @@ class Bundler::GemHelper
 
   def sh(cmd, &block); end
 
-  def sh_with_input(cmd); end
-
-  def sh_with_status(cmd, &block); end
+  def sh_with_code(cmd, &block); end
 
   def spec_path(); end
 
@@ -571,10 +549,6 @@ class Bundler::RubyGemsGemInstaller
 end
 
 class Bundler::RubyGemsGemInstaller
-end
-
-class Bundler::RubygemsIntegration::MoreFuture
-  def default_stubs(); end
 end
 
 class Bundler::Settings::Mirror
@@ -883,8 +857,6 @@ end
 
 module Coverage
   def self.peek_result(); end
-
-  def self.running?(); end
 end
 
 class Date::Infinity
@@ -900,8 +872,6 @@ class Delegator
 
   def __setobj__(obj); end
 
-  def eql?(obj); end
-
   def initialize(obj); end
 
   def marshal_dump(); end
@@ -915,7 +885,6 @@ class Delegator
   def protected_methods(all=T.unsafe(nil)); end
 
   def public_methods(all=T.unsafe(nil)); end
-  RUBYGEMS_ACTIVATION_MONITOR = ::T.let(nil, ::T.untyped)
 end
 
 class Delegator
@@ -948,13 +917,8 @@ module DidYouMean::Correctable
   def to_s(); end
 end
 
-class DidYouMean::DeprecatedIgnoredCallers
-  def +(*_); end
-
-  def <<(*_); end
-end
-
-class DidYouMean::DeprecatedIgnoredCallers
+class DidYouMean::Formatter
+  def initialize(corrections=T.unsafe(nil)); end
 end
 
 module DidYouMean::Jaro
@@ -963,15 +927,6 @@ end
 
 module DidYouMean::JaroWinkler
   def self.distance(str1, str2); end
-end
-
-class DidYouMean::KeyErrorChecker
-  def corrections(); end
-
-  def initialize(key_error); end
-end
-
-class DidYouMean::KeyErrorChecker
 end
 
 module DidYouMean::Levenshtein
@@ -992,17 +947,16 @@ class DidYouMean::MethodNameChecker
   def receiver(); end
 end
 
+module DidYouMean::NameErrorCheckers
+  def self.included(*_); end
+
+  def self.new(exception); end
+end
+
 class DidYouMean::NullChecker
   def corrections(); end
 
   def initialize(*_); end
-end
-
-class DidYouMean::PlainFormatter
-  def message_for(corrections); end
-end
-
-class DidYouMean::PlainFormatter
 end
 
 class DidYouMean::SpellChecker
@@ -1025,20 +979,9 @@ class DidYouMean::VariableNameChecker
   def method_names(); end
 
   def name(); end
-  RB_PREDEFINED_OBJECTS = ::T.let(nil, ::T.untyped)
-end
-
-module DidYouMean
-  def self.formatter(); end
-
-  def self.formatter=(formatter); end
 end
 
 class Dir
-  def self.children(*_); end
-
-  def self.each_child(*_); end
-
   def self.empty?(_); end
 
   def self.exists?(_); end
@@ -1060,13 +1003,6 @@ class ERB
   def def_method(mod, methodname, fname=T.unsafe(nil)); end
 
   def def_module(methodname=T.unsafe(nil)); end
-
-  def result_with_hash(hash); end
-end
-
-class ERB::Compiler::Scanner
-  DEFAULT_ETAGS = ::T.let(nil, ::T.untyped)
-  DEFAULT_STAGS = ::T.let(nil, ::T.untyped)
 end
 
 Emitter = Psych::Stream::Emitter
@@ -1285,54 +1221,8 @@ class Etc::Passwd
   def self.members(); end
 end
 
-module Etc
-  def self.confstr(_); end
-
-  def self.endgrent(); end
-
-  def self.endpwent(); end
-
-  def self.getgrent(); end
-
-  def self.getgrgid(*_); end
-
-  def self.getgrnam(_); end
-
-  def self.getlogin(); end
-
-  def self.getpwent(); end
-
-  def self.getpwnam(_); end
-
-  def self.getpwuid(*_); end
-
-  def self.group(); end
-
-  def self.nprocessors(); end
-
-  def self.passwd(); end
-
-  def self.setgrent(); end
-
-  def self.setpwent(); end
-
-  def self.sysconf(_); end
-
-  def self.sysconfdir(); end
-
-  def self.systmpdir(); end
-
-  def self.uname(); end
-end
-
-class Exception
-  def full_message(*_); end
-end
-
 class Exception
   def self.exception(*_); end
-
-  def self.to_tty?(); end
 end
 
 module Exception2MessageMapper
@@ -1393,8 +1283,6 @@ class File
   def self.empty?(_); end
 
   def self.exists?(_); end
-
-  def self.lutime(*_); end
 
   def self.mkfifo(*_); end
 end
@@ -1474,12 +1362,6 @@ module Forwardable
   def self.debug=(debug); end
 end
 
-class FrozenError
-end
-
-class FrozenError
-end
-
 module GC
   def garbage_collect(*_); end
 end
@@ -1492,42 +1374,69 @@ module GC
   def self.verify_internal_consistency(); end
 end
 
-module Gem::BundlerVersionFinder
-  def self.without_filtering(); end
-end
-
-class Gem::DependencyInstaller
-  def _deprecated_gems_to_install(); end
-
-  def gems_to_install(*args, &block); end
-end
-
-Gem::DependencyResolver = Gem::Resolver
-
-class Gem::Package
-  def realpath(file); end
+class Gem::Package::TarHeader
+  def self.oct_or_256based(str); end
 end
 
 class Gem::RemoteFetcher
-  def api_endpoint(uri); end
+  def s3_uri_signer(uri); end
 end
-
-Gem::RequestSet::GemDepedencyAPI = Gem::RequestSet::GemDependencyAPI
 
 class Gem::Resolver::Molinillo::DependencyGraph::Log
   extend ::Enumerable
 end
 
-class Gem::Source
-  def api_uri(); end
+class Gem::S3URISigner
+  def initialize(uri); end
+
+  def sign(expiration=T.unsafe(nil)); end
+
+  def uri(); end
+
+  def uri=(uri); end
+  BASE64_URI_TRANSLATE = ::T.let(nil, ::T.untyped)
+  EC2_METADATA_CREDENTIALS = ::T.let(nil, ::T.untyped)
 end
 
-class Gem::Specification
-  def bundled_gem_in_old_ruby?(); end
+class Gem::S3URISigner::ConfigurationError
+  def initialize(message); end
+end
 
-  def rubyforge_project(); end
+class Gem::S3URISigner::ConfigurationError
+end
 
-  def warning(statement); end
+class Gem::S3URISigner::InstanceProfileError
+  def initialize(message); end
+end
+
+class Gem::S3URISigner::InstanceProfileError
+end
+
+class Gem::S3URISigner::S3Config
+  def access_key_id(); end
+
+  def access_key_id=(_); end
+
+  def region(); end
+
+  def region=(_); end
+
+  def secret_access_key(); end
+
+  def secret_access_key=(_); end
+
+  def security_token(); end
+
+  def security_token=(_); end
+end
+
+class Gem::S3URISigner::S3Config
+  def self.[](*_); end
+
+  def self.members(); end
+end
+
+class Gem::S3URISigner
 end
 
 class Gem::Specification
@@ -1535,11 +1444,7 @@ class Gem::Specification
 end
 
 module Gem::Util
-  NULL_DEVICE = ::T.let(nil, ::T.untyped)
-end
-
-module Gem
-  def self._deprecated_datadir(gem_name); end
+  def self.correct_for_windows_path(path); end
 end
 
 class Hash
@@ -1572,15 +1477,9 @@ class Hash
 
   def replace(_); end
 
-  def slice(*_); end
-
   def to_h(); end
 
   def to_proc(); end
-
-  def transform_keys(); end
-
-  def transform_keys!(); end
 
   def transform_values(); end
 
@@ -1606,10 +1505,6 @@ class IO
 
   def pathconf(_); end
 
-  def pread(*_); end
-
-  def pwrite(_, _1); end
-
   def ready?(); end
 
   def wait(*_); end
@@ -1629,113 +1524,6 @@ class IO
   def self.foreach(*_); end
 
   def self.pipe(*_); end
-end
-
-class IPAddr
-  include ::Comparable
-  def &(other); end
-
-  def <<(num); end
-
-  def ==(other); end
-
-  def ===(other); end
-
-  def >>(num); end
-
-  def eql?(other); end
-
-  def family(); end
-
-  def hton(); end
-
-  def include?(other); end
-
-  def initialize(addr=T.unsafe(nil), family=T.unsafe(nil)); end
-
-  def ip6_arpa(); end
-
-  def ip6_int(); end
-
-  def ipv4?(); end
-
-  def ipv4_compat(); end
-
-  def ipv4_compat?(); end
-
-  def ipv4_mapped(); end
-
-  def ipv4_mapped?(); end
-
-  def ipv6?(); end
-
-  def link_local?(); end
-
-  def loopback?(); end
-
-  def mask(prefixlen); end
-
-  def mask!(mask); end
-
-  def native(); end
-
-  def prefix(); end
-
-  def prefix=(prefix); end
-
-  def private?(); end
-
-  def reverse(); end
-
-  def set(addr, *family); end
-
-  def succ(); end
-
-  def to_i(); end
-
-  def to_range(); end
-
-  def to_string(); end
-
-  def |(other); end
-
-  def ~(); end
-  IN4MASK = ::T.let(nil, ::T.untyped)
-  IN6FORMAT = ::T.let(nil, ::T.untyped)
-  IN6MASK = ::T.let(nil, ::T.untyped)
-  RE_IPV4ADDRLIKE = ::T.let(nil, ::T.untyped)
-  RE_IPV6ADDRLIKE_COMPRESSED = ::T.let(nil, ::T.untyped)
-  RE_IPV6ADDRLIKE_FULL = ::T.let(nil, ::T.untyped)
-end
-
-class IPAddr::AddressFamilyError
-end
-
-class IPAddr::AddressFamilyError
-end
-
-class IPAddr::Error
-end
-
-class IPAddr::Error
-end
-
-class IPAddr::InvalidAddressError
-end
-
-class IPAddr::InvalidAddressError
-end
-
-class IPAddr::InvalidPrefixError
-end
-
-class IPAddr::InvalidPrefixError
-end
-
-class IPAddr
-  def self.new_ntoh(addr); end
-
-  def self.ntop(addr); end
 end
 
 module IRB
@@ -1834,6 +1622,8 @@ class IRB::Context
   def load_modules=(load_modules); end
 
   def main(); end
+
+  def math_mode=(*opts, &b); end
 
   def prompt_c(); end
 
@@ -2049,8 +1839,6 @@ class IRB::Irb
   def suspend_name(path=T.unsafe(nil), name=T.unsafe(nil)); end
 
   def suspend_workspace(workspace); end
-  ATTR_PLAIN = ::T.let(nil, ::T.untyped)
-  ATTR_TTY = ::T.let(nil, ::T.untyped)
 end
 
 class IRB::Irb
@@ -2314,8 +2102,6 @@ class IRB::StdioOutputMethod
 end
 
 class IRB::WorkSpace
-  def code_around_binding(); end
-
   def evaluate(context, statements, file=T.unsafe(nil), line=T.unsafe(nil)); end
 
   def filter_backtrace(bt); end
@@ -2335,8 +2121,6 @@ module IRB
 
   def self.conf(); end
 
-  def self.default_src_encoding(); end
-
   def self.delete_caller(); end
 
   def self.init_config(ap_path); end
@@ -2351,7 +2135,7 @@ module IRB
 
   def self.load_modules(); end
 
-  def self.parse_opts(argv: T.unsafe(nil)); end
+  def self.parse_opts(); end
 
   def self.rc_file(ext=T.unsafe(nil)); end
 
@@ -2359,7 +2143,7 @@ module IRB
 
   def self.run_config(); end
 
-  def self.setup(ap_path, argv: T.unsafe(nil)); end
+  def self.setup(ap_path); end
 
   def self.start(ap_path=T.unsafe(nil)); end
 
@@ -2368,22 +2152,10 @@ end
 
 class Integer
   include ::JSON::Ext::Generator::GeneratorMethods::Integer
-  def allbits?(_); end
-
-  def anybits?(_); end
-
   def digits(*_); end
-
-  def nobits?(_); end
-
-  def pow(*_); end
 
   def to_bn(); end
   GMP_VERSION = ::T.let(nil, ::T.untyped)
-end
-
-class Integer
-  def self.sqrt(_); end
 end
 
 class JSON::Ext::Generator::State
@@ -2412,19 +2184,10 @@ module Kernel
   def pretty_inspect(); end
 
   def respond_to?(*_); end
-
-  def yield_self(); end
 end
 
 module Kernel
   def self.at_exit(); end
-end
-
-class KeyError
-  include ::DidYouMean::Correctable
-  def key(); end
-
-  def receiver(); end
 end
 
 class LoadError
@@ -2446,7 +2209,9 @@ Methods = T::Private::Methods
 class Module
   def deprecate_constant(*_); end
 
-  def undef_method(*_); end
+  def psych_yaml_as(url); end
+
+  def yaml_as(url); end
 end
 
 class Module
@@ -2467,10 +2232,6 @@ module MonitorMixin
   def mon_enter(); end
 
   def mon_exit(); end
-
-  def mon_locked?(); end
-
-  def mon_owned?(); end
 
   def mon_synchronize(); end
 
@@ -2522,7 +2283,11 @@ end
 class Object
   include ::JSON::Ext::Generator::GeneratorMethods::Object
   include ::PP::ObjectMixin
+  def psych_to_yaml(options=T.unsafe(nil)); end
+
   def to_yaml(options=T.unsafe(nil)); end
+
+  def to_yaml_properties(); end
   ARGF = ::T.let(nil, ::T.untyped)
   ARGV = ::T.let(nil, ::T.untyped)
   CROSS_COMPILING = ::T.let(nil, ::T.untyped)
@@ -2641,9 +2406,17 @@ class Pathname
 
   def fnmatch?(*_); end
 
-  def glob(*_); end
-
   def make_symlink(_); end
+end
+
+module Polyfill
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+module Polyfill::Module::M47200546474440
+end
+
+module Polyfill::Module::M47200546474440
 end
 
 class Proc
@@ -2683,12 +2456,11 @@ class Process::Tms
 end
 
 module Process
-  def self.last_status(); end
-
   def self.setpgrp(); end
 end
 
 module Psych
+  DEPRECATED = ::T.let(nil, ::T.untyped)
   LIBYAML_VERSION = ::T.let(nil, ::T.untyped)
   VERSION = ::T.let(nil, ::T.untyped)
 end
@@ -2806,6 +2578,19 @@ end
 class Psych::Coder
 end
 
+module Psych::DeprecatedMethods
+  def taguri(); end
+
+  def taguri=(taguri); end
+
+  def to_yaml_style(); end
+
+  def to_yaml_style=(to_yaml_style); end
+end
+
+module Psych::DeprecatedMethods
+end
+
 class Psych::DisallowedClass
   def initialize(klass_name); end
 end
@@ -2876,8 +2661,6 @@ class Psych::Handler
   def end_sequence(); end
 
   def end_stream(); end
-
-  def event_location(start_line, start_column, end_line, end_column); end
 
   def scalar(value, anchor, tag, plain, quoted, style); end
 
@@ -3051,22 +2834,6 @@ class Psych::Nodes::Node
   def children(); end
 
   def each(&block); end
-
-  def end_column(); end
-
-  def end_column=(end_column); end
-
-  def end_line(); end
-
-  def end_line=(end_line); end
-
-  def start_column(); end
-
-  def start_column=(start_column); end
-
-  def start_line(); end
-
-  def start_line=(start_line); end
 
   def tag(); end
 
@@ -3382,11 +3149,7 @@ class Psych::Visitors::YAMLTree
 
   def visit_DateTime(o); end
 
-  def visit_Delegator(o); end
-
   def visit_Encoding(o); end
-
-  def visit_Enumerator(o); end
 
   def visit_Exception(o); end
 
@@ -3425,10 +3188,15 @@ class Psych::Visitors::YAMLTree
   def visit_Time(o); end
 
   def visit_TrueClass(o); end
+  BINARY_RANGE = ::T.let(nil, ::T.untyped)
+  NULL = ::T.let(nil, ::T.untyped)
+  WS_RANGE = ::T.let(nil, ::T.untyped)
 end
 
 class Psych::Visitors::YAMLTree
   def self.create(options=T.unsafe(nil), emitter=T.unsafe(nil)); end
+
+  def self.new(emitter=T.unsafe(nil), ss=T.unsafe(nil), options=T.unsafe(nil)); end
 end
 
 module Psych::Visitors
@@ -3439,7 +3207,13 @@ module Psych
 
   def self.add_domain_type(domain, type_tag, &block); end
 
+  def self.add_private_type(type_tag, &block); end
+
+  def self.add_ruby_type(type_tag, &block); end
+
   def self.add_tag(tag, klass); end
+
+  def self.detect_implicit(thing); end
 
   def self.domain_types(); end
 
@@ -3455,9 +3229,11 @@ module Psych
 
   def self.libyaml_version(); end
 
-  def self.load(yaml, filename=T.unsafe(nil), fallback: T.unsafe(nil), symbolize_names: T.unsafe(nil)); end
+  def self.load(yaml, filename=T.unsafe(nil), fallback=T.unsafe(nil)); end
 
-  def self.load_file(filename, fallback: T.unsafe(nil)); end
+  def self.load_documents(yaml, &block); end
+
+  def self.load_file(filename, fallback=T.unsafe(nil)); end
 
   def self.load_stream(yaml, filename=T.unsafe(nil)); end
 
@@ -3465,7 +3241,9 @@ module Psych
 
   def self.load_tags=(load_tags); end
 
-  def self.parse(yaml, filename=T.unsafe(nil), fallback: T.unsafe(nil)); end
+  def self.object_maker(klass, hash); end
+
+  def self.parse(yaml, filename=T.unsafe(nil), fallback=T.unsafe(nil)); end
 
   def self.parse_file(filename); end
 
@@ -3473,9 +3251,15 @@ module Psych
 
   def self.parser(); end
 
+  def self.quick_emit(thing, opts=T.unsafe(nil), &block); end
+
+  def self.read_type_class(type, reference); end
+
   def self.remove_type(type_tag); end
 
-  def self.safe_load(yaml, whitelist_classes=T.unsafe(nil), whitelist_symbols=T.unsafe(nil), aliases=T.unsafe(nil), filename=T.unsafe(nil), symbolize_names: T.unsafe(nil)); end
+  def self.safe_load(yaml, whitelist_classes=T.unsafe(nil), whitelist_symbols=T.unsafe(nil), aliases=T.unsafe(nil), filename=T.unsafe(nil)); end
+
+  def self.tagurize(thing); end
 
   def self.to_json(object); end
 end
@@ -3506,6 +3290,17 @@ class RSpec::Core::ConfigurationOptions
   OPTIONS_ORDER = ::T.let(nil, ::T.untyped)
   UNFORCED_OPTIONS = ::T.let(nil, ::T.untyped)
   UNPROCESSABLE_OPTIONS = ::T.let(nil, ::T.untyped)
+end
+
+class RSpec::Core::DidYouMean
+  def call(); end
+
+  def initialize(relative_file_name); end
+
+  def relative_file_name(); end
+end
+
+class RSpec::Core::DidYouMean
 end
 
 RSpec::Core::Example::AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt = RSpec::Support::AllExceptionsExceptOnesWeMustNotRescue
@@ -3618,6 +3413,8 @@ class RSpec::Core::Formatters::DocumentationFormatter
   def example_passed(passed); end
 
   def example_pending(pending); end
+
+  def example_started(_notification); end
 end
 
 class RSpec::Core::Formatters::DocumentationFormatter
@@ -3625,6 +3422,17 @@ end
 
 class RSpec::Core::Formatters::ExceptionPresenter
   PENDING_DETAIL_FORMATTER = ::T.let(nil, ::T.untyped)
+end
+
+class RSpec::Core::Formatters::FailureListFormatter
+  def dump_profile(_profile); end
+
+  def example_failed(failure); end
+
+  def message(_message); end
+end
+
+class RSpec::Core::Formatters::FailureListFormatter
 end
 
 class RSpec::Core::Formatters::FallbackMessageFormatter
@@ -4386,8 +4194,6 @@ class RSpec::Matchers::BuiltIn::RaiseError
 
   def supports_block_expectations?(); end
 
-  def supports_value_expectations?(); end
-
   def with_message(expected_message); end
 end
 
@@ -4460,8 +4266,6 @@ class RSpec::Matchers::BuiltIn::ThrowSymbol
   def matches?(given_proc); end
 
   def supports_block_expectations?(); end
-
-  def supports_value_expectations?(); end
 end
 
 class RSpec::Matchers::BuiltIn::ThrowSymbol
@@ -4579,6 +4383,8 @@ module RSpec::Mocks::AnyInstance::Chain::Customizations
   def once(*args, &block); end
 
   def thrice(*args, &block); end
+
+  def time(*args, &block); end
 
   def times(*args, &block); end
 
@@ -4804,6 +4610,8 @@ class RSpec::Mocks::Matchers::HaveReceived
 
   def thrice(*args); end
 
+  def time(*args); end
+
   def times(*args); end
 
   def twice(*args); end
@@ -4866,6 +4674,8 @@ class RSpec::Mocks::Matchers::Receive
   def setup_negative_expectation(subject, &block); end
 
   def thrice(*args, &block); end
+
+  def time(*args, &block); end
 
   def times(*args, &block); end
 
@@ -5054,13 +4864,8 @@ module RSpec::Version
   STRING = ::T.let(nil, ::T.untyped)
 end
 
-module Random::Formatter
-  def alphanumeric(n=T.unsafe(nil)); end
-  ALPHANUMERIC = ::T.let(nil, ::T.untyped)
-end
-
 class Random
-  def self.urandom(_); end
+  def self.raw_seed(_); end
 end
 
 module RbConfig
@@ -6124,8 +5929,6 @@ class RubyVM::InstructionSequence
 
   def disassemble(); end
 
-  def each_child(); end
-
   def eval(); end
 
   def first_lineno(); end
@@ -6137,8 +5940,6 @@ class RubyVM::InstructionSequence
   def to_a(); end
 
   def to_binary(*_); end
-
-  def trace_points(); end
 end
 
 class RubyVM::InstructionSequence
@@ -6170,8 +5971,6 @@ ScanError = StringScanner::Error
 class Set
   def ==(other); end
 
-  def ===(o); end
-
   def compare_by_identity(); end
 
   def compare_by_identity?(); end
@@ -6185,8 +5984,6 @@ class Set
   def pretty_print(pp); end
 
   def pretty_print_cycle(pp); end
-
-  def reset(); end
   InspectKey = ::T.let(nil, ::T.untyped)
 end
 
@@ -6236,10 +6033,6 @@ class SimpleCov::LinesClassifier
   RELEVANT = ::T.let(nil, ::T.untyped)
   WHITESPACE_LINE = ::T.let(nil, ::T.untyped)
   WHITESPACE_OR_COMMENT_LINE = ::T.let(nil, ::T.untyped)
-end
-
-class SimpleDelegator
-  RUBYGEMS_ACTIVATION_MONITOR = ::T.let(nil, ::T.untyped)
 end
 
 module SingleForwardable
@@ -6687,21 +6480,11 @@ end
 
 class String
   include ::JSON::Ext::Generator::GeneratorMethods::String
-  def +@(); end
-
-  def -@(); end
-
   def []=(*_); end
 
   def casecmp?(_); end
 
-  def each_grapheme_cluster(); end
-
-  def encode(*_); end
-
   def encode!(*_); end
-
-  def grapheme_clusters(); end
 
   def reverse!(); end
 
@@ -6711,13 +6494,11 @@ class String
 
   def succ!(); end
 
-  def undump(); end
+  def unicode_normalize(form=T.unsafe(nil)); end
 
-  def unicode_normalize(*_); end
+  def unicode_normalize!(form=T.unsafe(nil)); end
 
-  def unicode_normalize!(*_); end
-
-  def unicode_normalized?(*_); end
+  def unicode_normalized?(form=T.unsafe(nil)); end
 
   def unpack1(_); end
 end
@@ -6740,8 +6521,6 @@ class StringScanner
   def beginning_of_line?(); end
 
   def bol?(); end
-
-  def captures(); end
 
   def charpos(); end
 
@@ -6803,8 +6582,6 @@ class StringScanner
 
   def search_full(_, _1, _2); end
 
-  def size(); end
-
   def skip(_); end
 
   def skip_until(_); end
@@ -6816,8 +6593,6 @@ class StringScanner
   def terminate(); end
 
   def unscan(); end
-
-  def values_at(*_); end
   Id = ::T.let(nil, ::T.untyped)
   Version = ::T.let(nil, ::T.untyped)
 end
@@ -7022,12 +6797,6 @@ class UncaughtThrowError
   def tag(); end
 
   def value(); end
-end
-
-module UnicodeNormalize
-end
-
-module UnicodeNormalize
 end
 
 Visitor = Psych::Visitors::Visitor
