@@ -1,0 +1,22 @@
+language: ruby
+rvm:
+- 2.3
+- 2.4
+- 2.5
+- 2.6
+- ruby-head
+before_install:
+- gem install bundler -v 2.0.1 --no-doc
+- gem install bundler -v 1.17.3 --no-doc
+script:
+- bundle exec srb --version
+- bundle exec srb tc
+- bundle exec rspec
+deploy:
+  provider: rubygems
+  api_key:
+    secure: IDUSywO3iQSttNLYYyfvxJb7xCUn2fz3/YERNrkstta6F0zUB1JGi9iAYALYd+1CMr9IunB5jFw9vzGH5vLH4sgs4QzUW34866AK5ntM/FDCJeGK+F91jEQhA9znnzrpU8WcyWKGsTPPjWYjeeJBs+2M4YVOxp/9bLRDHXZDykinHpnNaADqhVshxkq+b3pZqo9WsNepHDFtj4SwiAsyKNrYQMvhnDlyX1UYIhEvnulAgSj8Hj0UJHRf1ZHdGjgySz2il7pAVlMIiZ3wtSmVnv6qm7GD7Sa6HKmYcsSGcdNKA65gfn3G/0ICwsMbF1B3OMIAZ4T8FnIpfA5ki8/1OOnGbJ7odRBzkRnN1GH73UzCTG5O08M0HIO/iOfkGnojKhqLOcY292jYnVWNk18YBOJbt+OOm6YTsFw1w+B3eFhdqn3K5eFhbFergOXTXu4h+bEFxLTVA0Sh0KgGrxcrYZUY7/E9LXMfEtONYGLkwxAsJok0fBnuucY/RJMDi58XhyD1eiwN8CpXuw5L+NixxTEDp1/OAznhAIoVtIKkHN4xT8vxF5SUcn2R6WdgY4Uj6o6B1vKCcL3JS4KL8HHWdYZbpkBJvjqAVOirIYbnQkH+KQAznxNMIByd2ipqaiAn6EMhUxYtYiqkbgo7tB7leIfRgdhQQ3vZ0lMZqNBNS5s=
+  gem: sorbet-coerce
+  on:
+    tags: true
+    repo: chanzuckerberg/sorbet-coerce
