@@ -29,14 +29,18 @@ module T::Private
       elsif type.is_a?(T::Types::Simple)
         _convert(value, type.raw_type)
       elsif type.is_a?(T::Types::Union)
-        raw_types = type.types.map(&:raw_type)
+        nilclass_idx = T.let(nil, T.nilable(Integer))
+        type.types.each_with_index do |t, i|
+          nilclass_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == NilClass
+        end
+
         raise ArgumentError.new(
           'the only supported union type is T.nilable',
-        ) unless raw_types.length == 2 && raw_types.include?(NilClass)
+        ) if type.types.length != 2 || nilclass_idx.nil?
 
         _convert(
           value,
-          raw_types.select { |t| t != NilClass }.first,
+          type.types[nilclass_idx == 0 ? 1 : 0],
         )
       elsif type < T::Struct
         args = _build_args(value, type.props)
@@ -86,6 +90,7 @@ module T::Private
 
     sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }
     def _build_args(args, props)
+      return {} if args.nil?
       args.map { |name, value|
         key = name.to_sym
         [

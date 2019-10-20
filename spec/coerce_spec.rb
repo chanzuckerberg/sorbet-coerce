@@ -130,15 +130,6 @@ describe T::Coerce do
       expect(T::Coerce[T::Array[Integer]].new.from('1')).to eql [1]
       expect(T::Coerce[T::Array[Integer]].new.from(['1', '2', '3'])).to eql [1, 2, 3]
       expect(T::Coerce[T::Array[Integer]].new.from(['1', 'invalid', '3'])).to eql []
-      expect(
-        T::Coerce[T::Array[T.nilable(Integer)]].new.from(['1', 'invalid', '3']),
-      ).to eql [1, nil, 3]
-      expect(
-        T::Coerce[T::Array[T::Array[Integer]]].new.from(['', '', '']),
-      ).to eql [[], [], []]
-      expect(
-        T::Coerce[T::Array[T::Array[Integer]]].new.from([['1'], ['2'], ['3']]),
-      ).to eql [[1], [2], [3]]
 
       infos = T::Coerce[T::Array[ParamInfo]].new.from(name: 'a', skill_ids: [])
       T.assert_type!(infos, T::Array[ParamInfo])
