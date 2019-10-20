@@ -139,6 +139,14 @@ describe T::Coerce do
       expect(
         T::Coerce[T::Array[T::Array[Integer]]].new.from([['1'], ['2'], ['3']]),
       ).to eql [[1], [2], [3]]
+
+      infos = T::Coerce[T::Array[ParamInfo]].new.from(name: 'a', skill_ids: [])
+      T.assert_type!(infos, T::Array[ParamInfo])
+      expect(infos.first.name).to eql 'a'
+
+      infos = T::Coerce[T::Array[ParamInfo]].new.from([{name: 'b', skill_ids: []}])
+      T.assert_type!(infos, T::Array[ParamInfo])
+      expect(infos.first.name).to eql 'b'
     end
   end
 end

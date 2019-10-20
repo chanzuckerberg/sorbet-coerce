@@ -27,7 +27,7 @@ module T::Private
       if type.is_a?(T::Types::TypedArray)
         _convert_to_a(value, type.type)
       elsif type.is_a?(T::Types::Simple)
-        _convert_simple(value, type.raw_type)
+        _convert(value, type.raw_type)
       elsif type.is_a?(T::Types::Union)
         raw_types = type.types.map(&:raw_type)
         raise ArgumentError.new(
@@ -74,7 +74,7 @@ module T::Private
 
     sig { params(ary: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_to_a(ary, type)
-      ary = [ary] unless ary.respond_to?(:map)
+      ary = [ary] unless ary.is_a?(::Array)
       T.send(
         'let',
         ary.map { |value| _convert(value, type) },
