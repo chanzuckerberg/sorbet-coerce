@@ -41,6 +41,7 @@ T.reveal_type(converted) # <Type>
 
 We don't support
 - `T::Hash` (currently)
+- Experimental features (tuples and shapes)
 - `T.any(<supported type>, ...)`: A union type other than `T.nilable`
 
 ### Examples
