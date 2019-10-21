@@ -23,6 +23,12 @@ describe T::Coerce do
       const :opt, T.nilable(ParamInfo2)
     end
 
+    CustomType = Struct.new(:a)
+
+    class UnsupportedCustomType
+      # Does not respond to new
+    end
+
     let!(:param) {
       T::Coerce[Param].new.from({
         id: 1,
@@ -120,6 +126,18 @@ describe T::Coerce do
 
       expect(T::Coerce[T.nilable(Integer)].new.from('invalid integer string')).to be nil
       expect(T::Coerce[Float].new.from('1.0')).to eql 1.0
+
+      expect(T::Coerce[T::Boolean].new.from('false')).to be false
+      expect(T::Coerce[T::Boolean].new.from('true')).to be true
+    end
+  end
+
+  context 'when given custom types' do
+    it 'coerces correctly' do
+      T.assert_type!(T::Coerce[CustomType].new.from(a: 1), CustomType)
+      expect(T::Coerce[CustomType].new.from(1).a).to be 1
+
+      expect{T::Coerce[UnsupportedCustomType].new.from(1)}.to raise_error(T::CoercionError)
     end
   end
 

@@ -34,6 +34,7 @@ T.reveal_type(converted) # <Type>
 ### Supported Types
 - Simple Types
 - Custom Types: If the values can be coerced by `.new`
+- `T::Boolean`
 - `T.nilable(<supported type>)`
 - `T::Array[<supported type>]`
 - Subclasses of `T::Struct`
@@ -46,6 +47,12 @@ We don't support
 - Simple Types
 
 ```ruby
+T::Coerce[T::Boolean].new.from('false')
+# => false
+
+T::Coerce[T::Boolean].new.from('true')
+# => true
+
 T::Coerce[Date].new.from('2019-08-05')
 # => #<Date: 2019-08-05 ((2458701j,0s,0n),+0s,2299161j)>
 
