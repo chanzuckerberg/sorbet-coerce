@@ -29,15 +29,30 @@ module T::Private
       elsif type.is_a?(T::Types::Simple)
         _convert(value, type.raw_type)
       elsif type.is_a?(T::Types::Union)
-        raw_types = type.types.map(&:raw_type)
-        raise ArgumentError.new(
-          'the only supported union type is T.nilable',
-        ) unless raw_types.length == 2 && raw_types.include?(NilClass)
+        true_idx = T.let(nil, T.nilable(Integer))
+        false_idx = T.let(nil, T.nilable(Integer))
+        nil_idx = T.let(nil, T.nilable(Integer))
 
-        _convert(
-          value,
-          raw_types.select { |t| t != NilClass }.first,
+        type.types.each_with_index do |t, i|
+          nil_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == NilClass
+          true_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == TrueClass
+          false_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == FalseClass
+        end
+
+        raise ArgumentError.new(
+          'the only supported union types are T.nilable and T::Boolean',
+        ) unless (
+          (!true_idx.nil? && !false_idx.nil? && !nil_idx.nil?) || # T.nilable(T::Boolean)
+          (type.types.length == 2 && (
+            !nil_idx.nil? || (!true_idx.nil? && !false_idx.nil?) # T.nilable || T::Boolean
+          ))
         )
+
+        if !true_idx.nil? && !false_idx.nil?
+          _convert_simple(value, T::Boolean)
+        else
+          _convert(value, type.types[nil_idx == 0 ? 1 : 0])
+        end
       elsif type < T::Struct
         args = _build_args(value, type.props)
         begin
@@ -53,11 +68,14 @@ module T::Private
     sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_simple(value, type)
       return nil if value.nil?
-      return value if value.is_a?(type)
-      safe_type_rule = if type == T::Boolean
-        SafeType::Boolean.strict
+      safe_type_rule = T.let(nil, T.untyped)
+
+      if type == T::Boolean
+        safe_type_rule = SafeType::Boolean.strict
+      elsif value.is_a?(type)
+        return value
       elsif PRIMITIVE_TYPES.include?(type)
-        SafeType.const_get(type.name).strict
+        safe_type_rule = SafeType.const_get(type.name).strict
       else
         safe_type_rule = type
       end
@@ -86,6 +104,7 @@ module T::Private
 
     sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }
     def _build_args(args, props)
+      return {} if args.nil?
       args.map { |name, value|
         key = name.to_sym
         [
