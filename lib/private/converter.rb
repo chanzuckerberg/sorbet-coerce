@@ -41,13 +41,15 @@ module T::Private
 
         raise ArgumentError.new(
           'the only supported union types are T.nilable and T::Boolean',
-        ) unless type.types.length == 2 && (
-          !nil_idx.nil? || (!true_idx.nil? && !false_idx.nil?)
+        ) unless (
+          (!true_idx.nil? && !false_idx.nil? && !nil_idx.nil?) || # T.nilable(T::Boolean)
+          (type.types.length == 2 && (
+            !nil_idx.nil? || (!true_idx.nil? && !false_idx.nil?) # T.nilable || T::Boolean
+          ))
         )
 
-        if nil_idx.nil?
-          # Must be T::Boolean
-          _convert_simple(value, type)
+        if !true_idx.nil? && !false_idx.nil?
+          _convert_simple(value, T::Boolean)
         else
           _convert(value, type.types[nil_idx == 0 ? 1 : 0])
         end

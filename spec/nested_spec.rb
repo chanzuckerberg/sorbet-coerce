@@ -6,6 +6,7 @@ describe T::Coerce do
   context 'when given nested types' do
     class User < T::Struct
       const :id, Integer
+      const :valid, T.nilable(T::Boolean)
     end
 
     class NestedParam < T::Struct
@@ -17,9 +18,9 @@ describe T::Coerce do
       converted = T::Coerce[NestedParam].new.from({
         users: {id: '1'},
         params: {
-          users: {id: '2'},
+          users: {id: '2', valid: 'true'},
           params: {
-            users: {id: '3'},
+            users: {id: '3', valid: 'true'},
           },
         },
       })
@@ -27,11 +28,11 @@ describe T::Coerce do
       #   params=<NestedParam
       #     params=<NestedParam
       #       params=nil,
-      #       users=[<User id=3>]
+      #       users=[<User id=3 valid=true>]
       #     >,
-      #     users=[<User id=2>]
+      #     users=[<User id=2 valid=true>]
       #   >,
-      #   users=[<User id=1>]
+      #   users=[<User id=1 valid=nil>]
       # >
 
       expect(converted.users.map(&:id)).to eql([1])
