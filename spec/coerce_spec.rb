@@ -23,7 +23,13 @@ describe T::Coerce do
       const :opt, T.nilable(ParamInfo2)
     end
 
-    CustomType = Struct.new(:a)
+    class CustomType
+      attr_reader :a
+
+      def initialize(a)
+        @a = a
+      end
+    end
 
     class UnsupportedCustomType
       # Does not respond to new
