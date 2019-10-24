@@ -1,4 +1,4 @@
-# typed: false
+# typed: ignore
 require 'sorbet-coerce'
 require 'sorbet-runtime'
 
@@ -162,6 +162,14 @@ describe T::Coerce do
       infos = T::Coerce[T::Array[ParamInfo]].new.from([{name: 'b', skill_ids: []}])
       T.assert_type!(infos, T::Array[ParamInfo])
       expect(infos.first.name).to eql 'b'
+    end
+  end
+
+  context 'when given a type alias' do
+    MyType = T.type_alias(T::Boolean)
+
+    it 'coerces correctly' do
+      expect(T::Coerce[MyType].new.from('false')).to be false
     end
   end
 end
