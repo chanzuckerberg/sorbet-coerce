@@ -53,11 +53,13 @@ module T::Private
         else
           _convert(value, type.types[nil_idx == 0 ? 1 : 0])
         end
+      elsif type.is_a?(T::Private::Types::TypeAlias)
+        _convert(value, type.aliased_type)
       elsif type < T::Struct
         args = _build_args(value, type.props)
         begin
           type.new(args)
-        rescue T::Props::InvalidValueError, ArgumentError
+        rescue
           nil
         end
       else

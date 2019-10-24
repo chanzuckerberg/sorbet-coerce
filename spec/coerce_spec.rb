@@ -164,4 +164,12 @@ describe T::Coerce do
       expect(infos.first.name).to eql 'b'
     end
   end
+
+  context 'when given a type alias' do
+    MyType = T.type_alias(T::Boolean)
+
+    it 'coerces correctly' do
+      expect(T::Coerce[MyType].new.from('false')).to be false
+    end
+  end
 end
