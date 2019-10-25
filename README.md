@@ -29,8 +29,6 @@ converted = T::Coerce[<Type>].new.from(<value>)
 T.reveal_type(converted) # <Type>
 ```
 
-
-
 ### Supported Types
 - Simple Types
 - Custom Types: If the values can be coerced by `.new`
@@ -41,6 +39,7 @@ T.reveal_type(converted) # <Type>
 
 We don't support
 - `T::Hash` (currently)
+- `T::Enum` (currently)
 - Experimental features (tuples and shapes)
 - `T.any(<supported type>, ...)`: A union type other than `T.nilable`
 
@@ -79,10 +78,7 @@ T::Coerce[Time].new.from('2019-08-05')
 - `T.nilable`
 
 ```ruby
-T::Coerce[Integer].new.from('invalid number')
-# => T::CoercionError (Could not coerce value ("invalid number") of type (String) to desired type (Integer))
-
-T::Coerce[T.nilable(Integer)].new.from('invalid number')
+T::Coerce[T.nilable(Integer)].new.from('')
 # => nil
 ```
 
@@ -91,12 +87,6 @@ T::Coerce[T.nilable(Integer)].new.from('invalid number')
 ```ruby
 T::Coerce[T::Array[Integer]].new.from([1.0, '2.0'])
 # => [1, 2]
-
-T::Coerce[T::Array[Integer]].new.from([1.0, 'invalid num'])
-# => []
-
-T::Coerce[T::Array[T.nilable(Integer)]].new.from([1.0, 'invalid num'])
-# => [1, nil]
 ```
 
 - `T::Struct`
@@ -110,6 +100,9 @@ end
 T::Coerce[Param].new.from({id: '1'})
 # => <Param id=1, role="wizard">
 ```
+More examples: [nested params](https://github.com/chanzuckerberg/sorbet-coerce/blob/a56c0c6a363bb49b11e77ac57893afc3d54c6b8c/spec/nested_spec.rb#L18-L26)
+
+## Coercion Error
 
 ## Contributing
 
