@@ -13,8 +13,6 @@ before_install:
 - gem install bundler -v 2.0.1 --no-doc
 - gem install bundler -v 1.17.3 --no-doc
 script:
-- bundle exec srb --version
-- bundle exec srb tc
 - bundle exec rspec
 deploy:
   provider: rubygems
