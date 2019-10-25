@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = %q{sorbet-coerce}
-  s.version       = "0.1.4"
+  s.version       = "0.1.5"
   s.date          = %q{2019-10-04}
   s.summary       = %q{A type coercion lib works with Sorbet's static type checker and type definitions; raises an error if the coercion fails.}
   s.authors       = ["Chan Zuckerberg Initiative"]
@@ -9,6 +9,8 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
   s.require_paths = ["lib"]
   s.files         = Dir.glob('lib/**/*')
+  s.files         += Dir.glob('spec/**/*')
+  s.files         += Dir.glob('rbi/**/*')
 
   s.required_ruby_version = ['>= 2.3.0']
 
