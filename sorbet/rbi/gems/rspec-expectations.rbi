@@ -148,6 +148,7 @@ class RSpec::Matchers::Composable::DescribableItem < Struct
   def item=(_); end
   def pretty_print(pp); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
