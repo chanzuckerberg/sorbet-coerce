@@ -41,12 +41,12 @@ describe T::Coerce do
     end
 
     it 'works with nest T::Array' do
-      expect(
-        T::Coerce[T::Array[T.nilable(Integer)]].new.from(['1', 'invalid', '3']),
-      ).to eql [1, nil, 3]
-      expect(
-        T::Coerce[T::Array[T::Array[Integer]]].new.from(['', '', '']),
-      ).to eql [[], [], []]
+      expect {
+        T::Coerce[T::Array[T.nilable(Integer)]].new.from(['1', 'invalid', '3'])
+      }.to raise_error
+      expect {
+        T::Coerce[T::Array[T::Array[Integer]]].new.from([nil])
+      }.to raise_error
       expect(
         T::Coerce[T::Array[T::Array[Integer]]].new.from([['1'], ['2'], ['3']]),
       ).to eql [[1], [2], [3]]
@@ -64,12 +64,12 @@ describe T::Coerce do
           T::Array[
             T::Array[
               T::Array[
-                T::Array[T.nilable(User)]
+                T::Array[User]
               ]
             ]
           ]
         ]
-      ].new.from(nil).flatten).to eql([nil])
+      ].new.from(id: 1).flatten.first.id).to eql 1
 
       expect(T::Coerce[
         T.nilable(T::Array[T.nilable(T::Array[T.nilable(User)])])

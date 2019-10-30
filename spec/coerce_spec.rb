@@ -13,7 +13,7 @@ describe T::Coerce do
     class ParamInfo2 < T::Struct
       const :a, Integer
       const :b, Integer
-      const :notes, T::Array[String]
+      const :notes, T::Array[String], default: []
     end
 
     class Param < T::Struct
@@ -82,7 +82,7 @@ describe T::Coerce do
       expect(param.info.lvl).to eql 100
       expect(param.info.name).to eql 'mango'
       expect(param.info.skill_ids).to eql [123, 456]
-      expect(param.opt).to be nil # missing notes
+      expect(param.opt.notes).to eql []
 
       expect(param2.id).to eql 2
       expect(param2.info.name).to eql 'honeydew'
@@ -92,15 +92,15 @@ describe T::Coerce do
       expect(param2.opt.b).to eql 2
       expect(param2.opt.notes).to eql []
 
-      expect(
-        T::Coerce[T.nilable(Param)].new.from({
+      expect {
+        T::Coerce[Param].new.from({
           id: 3,
           info: {
             # missing required name
             lvl: 2,
           },
         })
-      ).to be nil
+      }.to raise_error
     end
   end
 
@@ -130,7 +130,7 @@ describe T::Coerce do
       expect(T::Coerce[Integer].new.from(2)).to eql 2
       expect(T::Coerce[Integer].new.from('1.0')).to eql 1
 
-      expect(T::Coerce[T.nilable(Integer)].new.from('invalid integer string')).to be nil
+      expect{T::Coerce[T.nilable(Integer)].new.from('invalid integer string')}.to raise_error
       expect(T::Coerce[Float].new.from('1.0')).to eql 1.0
 
       expect(T::Coerce[T::Boolean].new.from('false')).to be false
@@ -149,11 +149,11 @@ describe T::Coerce do
 
   context 'when dealing with arries' do
     it 'coreces correctly' do
-      expect(T::Coerce[T::Array[Integer]].new.from(nil)).to eql []
-      expect(T::Coerce[T::Array[Integer]].new.from('not an array')).to eql []
+      expect{T::Coerce[T::Array[Integer]].new.from(nil)}.to raise_error
+      expect{T::Coerce[T::Array[Integer]].new.from('not an array')}.to raise_error
       expect(T::Coerce[T::Array[Integer]].new.from('1')).to eql [1]
       expect(T::Coerce[T::Array[Integer]].new.from(['1', '2', '3'])).to eql [1, 2, 3]
-      expect(T::Coerce[T::Array[Integer]].new.from(['1', 'invalid', '3'])).to eql []
+      expect{T::Coerce[T::Array[Integer]].new.from(['1', 'invalid', '3'])}.to raise_error
 
       infos = T::Coerce[T::Array[ParamInfo]].new.from(name: 'a', skill_ids: [])
       T.assert_type!(infos, T::Array[ParamInfo])

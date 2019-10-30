@@ -58,11 +58,7 @@ module T::Private
         _convert(value, type.aliased_type)
       elsif type < T::Struct
         args = _build_args(value, type.props)
-        begin
-          type.new(args)
-        rescue
-          nil
-        end
+        type.new(args)
       else
         _convert_simple(value, type)
       end
@@ -71,6 +67,7 @@ module T::Private
     sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_simple(value, type)
       return nil if value.nil?
+
       safe_type_rule = T.let(nil, T.untyped)
 
       if type == T::Boolean
@@ -84,12 +81,12 @@ module T::Private
       end
       SafeType::coerce(value, safe_type_rule)
     rescue SafeType::EmptyValueError, SafeType::CoercionError
-      nil
+      value
     rescue SafeType::InvalidRuleError
       begin
         type.new(value)
       rescue
-        nil
+        value
       end
     end
 
@@ -101,8 +98,6 @@ module T::Private
         ary.map { |value| _convert(value, type) },
         T.const_get('Array')[type],
       )
-    rescue TypeError
-      []
     end
 
     sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }
