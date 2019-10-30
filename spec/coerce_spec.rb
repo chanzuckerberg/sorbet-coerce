@@ -135,6 +135,10 @@ describe T::Coerce do
 
       expect(T::Coerce[T::Boolean].new.from('false')).to be false
       expect(T::Coerce[T::Boolean].new.from('true')).to be true
+
+      expect(T::Coerce[T.nilable(Integer)].new.from('')).to be nil
+      expect{T::Coerce[T.nilable(Integer)].new.from([])}.to raise_error
+      expect(T::Coerce[T.nilable(String)].new.from('')).to eql ''
     end
   end
 
