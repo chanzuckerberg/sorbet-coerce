@@ -41,9 +41,9 @@ describe T::Coerce do
     end
 
     it 'works with nest T::Array' do
-      expect(
-        T::Coerce[T::Array[T.nilable(Integer)]].new.from(['1', 'invalid', '3']),
-      ).to eql [1, nil, 3]
+      expect {
+        T::Coerce[T::Array[T.nilable(Integer)]].new.from(['1', 'invalid', '3'])
+      }.to raise_error
       expect {
         T::Coerce[T::Array[T::Array[Integer]]].new.from([nil])
       }.to raise_error

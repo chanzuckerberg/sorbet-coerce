@@ -66,7 +66,7 @@ module T::Private
 
     sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_simple(value, type)
-      return nil if value.nil?
+      return nil if value.nil? || (value == '' && type != String)
 
       safe_type_rule = T.let(nil, T.untyped)
 
@@ -81,12 +81,12 @@ module T::Private
       end
       SafeType::coerce(value, safe_type_rule)
     rescue SafeType::EmptyValueError, SafeType::CoercionError
-      nil
+      value
     rescue SafeType::InvalidRuleError
       begin
         type.new(value)
       rescue
-        nil
+        value
       end
     end
 

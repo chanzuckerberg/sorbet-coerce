@@ -130,14 +130,14 @@ describe T::Coerce do
       expect(T::Coerce[Integer].new.from(2)).to eql 2
       expect(T::Coerce[Integer].new.from('1.0')).to eql 1
 
-      expect(T::Coerce[T.nilable(Integer)].new.from('invalid integer string')).to be nil
+      expect{T::Coerce[T.nilable(Integer)].new.from('invalid integer string')}.to raise_error
       expect(T::Coerce[Float].new.from('1.0')).to eql 1.0
 
       expect(T::Coerce[T::Boolean].new.from('false')).to be false
       expect(T::Coerce[T::Boolean].new.from('true')).to be true
 
       expect(T::Coerce[T.nilable(Integer)].new.from('')).to be nil
-      expect(T::Coerce[T.nilable(Integer)].new.from([])).to be nil
+      expect{T::Coerce[T.nilable(Integer)].new.from([])}.to raise_error
       expect(T::Coerce[T.nilable(String)].new.from('')).to eql ''
     end
   end
