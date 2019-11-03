@@ -23,12 +23,20 @@ describe T::Coerce do
       const :opt, T.nilable(ParamInfo2)
     end
 
+    class DefaultParams < T::Struct
+      const :a, Integer, default: 1
+    end
+
     class CustomType
       attr_reader :a
 
       def initialize(a)
         @a = a
       end
+    end
+
+    class CustomType2
+      def self.new(a); 1; end
     end
 
     class UnsupportedCustomType
@@ -101,6 +109,9 @@ describe T::Coerce do
           },
         })
       }.to raise_error
+
+      expect(T::Coerce[DefaultParams].new.from(nil).a).to be 1
+      expect(T::Coerce[DefaultParams].new.from('').a).to be 1
     end
   end
 
@@ -147,13 +158,15 @@ describe T::Coerce do
       T.assert_type!(T::Coerce[CustomType].new.from(a: 1), CustomType)
       expect(T::Coerce[CustomType].new.from(1).a).to be 1
 
-      expect{T::Coerce[UnsupportedCustomType].new.from(1)}.to raise_error(T::CoercionError)
+      expect{T::Coerce[UnsupportedCustomType].new.from(1)}.to raise_error(ArgumentError)
+      expect{T::Coerce[CustomType2].new.from(1)}.to raise_error(T::CoercionError)
     end
   end
 
   context 'when dealing with arries' do
     it 'coreces correctly' do
-      expect{T::Coerce[T::Array[Integer]].new.from(nil)}.to raise_error
+      expect(T::Coerce[T::Array[Integer]].new.from(nil)).to eql []
+      expect(T::Coerce[T::Array[Integer]].new.from('')).to eql []
       expect{T::Coerce[T::Array[Integer]].new.from('not an array')}.to raise_error
       expect(T::Coerce[T::Array[Integer]].new.from('1')).to eql [1]
       expect(T::Coerce[T::Array[Integer]].new.from(['1', '2', '3'])).to eql [1, 2, 3]

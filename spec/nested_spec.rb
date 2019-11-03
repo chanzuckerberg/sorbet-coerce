@@ -44,9 +44,9 @@ describe T::Coerce do
       expect {
         T::Coerce[T::Array[T.nilable(Integer)]].new.from(['1', 'invalid', '3'])
       }.to raise_error
-      expect {
+      expect(
         T::Coerce[T::Array[T::Array[Integer]]].new.from([nil])
-      }.to raise_error
+      ).to eql([[]])
       expect(
         T::Coerce[T::Array[T::Array[Integer]]].new.from([['1'], ['2'], ['3']]),
       ).to eql [[1], [2], [3]]

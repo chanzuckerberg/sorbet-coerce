@@ -66,7 +66,7 @@ module T::Private
 
     sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_simple(value, type)
-      return nil if value.nil? || (value == '' && type != String)
+      return nil if _nil_like?(value, type)
 
       safe_type_rule = T.let(nil, T.untyped)
 
@@ -83,15 +83,13 @@ module T::Private
     rescue SafeType::EmptyValueError, SafeType::CoercionError
       value
     rescue SafeType::InvalidRuleError
-      begin
-        type.new(value)
-      rescue
-        value
-      end
+      type.new(value)
     end
 
     sig { params(ary: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_to_a(ary, type)
+      return [] if _nil_like?(ary, type)
+
       ary = [ary] unless ary.is_a?(::Array)
       T.send(
         'let',
@@ -102,7 +100,8 @@ module T::Private
 
     sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }
     def _build_args(args, props)
-      return {} if args.nil?
+      return {} if _nil_like?(args, Hash)
+
       args.map { |name, value|
         key = name.to_sym
         [
@@ -111,6 +110,11 @@ module T::Private
             nil : _convert(value, props[key][:type]),
         ]
       }.to_h.slice(*props.keys)
+    end
+
+    sig { params(value: T.untyped, type: T.untyped).returns(T::Boolean) }
+    def _nil_like?(value, type)
+      value.nil? || (value == '' && type != String)
     end
   end
 end
