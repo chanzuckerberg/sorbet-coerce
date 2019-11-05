@@ -35,6 +35,7 @@ describe T::Coerce do
       expect(T::Coerce[Integer].new.from(invalid_arg)).to eql(invalid_arg)
       expect(T::Coerce[T::Array[Integer]].new.from(1)).to be 1
       expect(T::Coerce[T::Array[Integer]].new.from(invalid_arg)).to eql(invalid_arg)
+      expect(T::Coerce[T::Array[Integer]].new.from({a: 1})).to eql([[:a, 1]])
 
       expect {
         T::Coerce[CustomTypeRaisesHardError].new.from(1)
