@@ -20,6 +20,10 @@ describe T::Coerce do
       ).and_return(ignore_error)
     end
 
+    class ParamsWithSortError < T::Struct
+      const :a, Integer
+    end
+
     class CustomTypeRaisesHardError
       def initialize(value)
         raise StandardError.new('value cannot be 1') if value == 1
@@ -41,6 +45,10 @@ describe T::Coerce do
         T::Coerce[CustomTypeRaisesHardError].new.from(1)
       }.to raise_error(StandardError)
       expect(T::Coerce[CustomTypeDoesNotRiaseHardError].new.from(1)).to eql(1)
+
+      if Gem.loaded_specs['sorbet-runtime'].version >= Gem::Version.new('0.4.4948')
+        expect(T::Coerce[ParamsWithSortError].new.from({a: invalid_arg}).a).to eql(invalid_arg)
+      end
     end
   end
 end
