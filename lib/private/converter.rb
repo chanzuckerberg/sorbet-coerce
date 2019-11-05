@@ -90,12 +90,8 @@ module T::Private
     def _convert_to_a(ary, type)
       return [] if _nil_like?(ary, type)
 
-      ary = [ary] unless ary.is_a?(::Array)
-      T.send(
-        'let',
-        ary.map { |value| _convert(value, type) },
-        T.const_get('Array')[type],
-      )
+      # Checked by the T.let at root
+      ary.respond_to?(:map) ? ary.map { |value| _convert(value, type) } : ary
     end
 
     sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }

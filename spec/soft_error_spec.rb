@@ -4,11 +4,20 @@ require 'sorbet-runtime'
 
 describe T::Coerce do
   context 'when type errors are soft errors' do
-    before(:all) do
-      ignore_error = Proc.new {}
-      T::Configuration.inline_type_error_handler = ignore_error
-      T::Configuration.call_validation_error_handler = ignore_error
-      T::Configuration.sig_builder_error_handler = ignore_error
+    let(:ignore_error) { Proc.new {} }
+
+    before(:each) do
+      allow(T::Configuration).to receive(
+        :inline_type_error_handler,
+      ).and_return(ignore_error)
+
+      allow(T::Configuration).to receive(
+        :call_validation_error_handler,
+      ).and_return(ignore_error)
+
+      allow(T::Configuration).to receive(
+        :sig_builder_error_handler,
+      ).and_return(ignore_error)
     end
 
     class CustomTypeRaisesHardError
@@ -24,6 +33,9 @@ describe T::Coerce do
     it 'works as expected' do
       invalid_arg = 'invalid integer string'
       expect(T::Coerce[Integer].new.from(invalid_arg)).to eql(invalid_arg)
+      expect(T::Coerce[T::Array[Integer]].new.from(1)).to be 1
+      expect(T::Coerce[T::Array[Integer]].new.from(invalid_arg)).to eql(invalid_arg)
+
       expect {
         T::Coerce[CustomTypeRaisesHardError].new.from(1)
       }.to raise_error(StandardError)

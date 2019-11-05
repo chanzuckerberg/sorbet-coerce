@@ -16,11 +16,11 @@ describe T::Coerce do
 
     it 'works with nest T::Struct' do
       converted = T::Coerce[NestedParam].new.from({
-        users: {id: '1'},
+        users: [{id: '1'}],
         params: {
-          users: {id: '2', valid: 'true'},
+          users: [{id: '2', valid: 'true'}],
           params: {
-            users: {id: '3', valid: 'true'},
+            users: [{id: '3', valid: 'true'}],
           },
         },
       })
@@ -69,7 +69,7 @@ describe T::Coerce do
             ]
           ]
         ]
-      ].new.from(id: 1).flatten.first.id).to eql 1
+      ].new.from([[[[[{id: 1}]]]]]).flatten.first.id).to eql 1
 
       expect(T::Coerce[
         T.nilable(T::Array[T.nilable(T::Array[T.nilable(User)])])
