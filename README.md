@@ -80,6 +80,15 @@ T::Coerce[Time].new.from('2019-08-05')
 ```ruby
 T::Coerce[T.nilable(Integer)].new.from('')
 # => nil
+T::Coerce[T.nilable(Integer)].new.from(nil)
+# => nil
+T::Coerce[T.nilable(Integer)].new.from('')
+# => nil
+```
+But,
+```
+T::Coerce[T.nilable(String)].new.from('')
+# => ""
 ```
 
 - `T::Array`
