@@ -156,7 +156,6 @@ class Params < T::Struct
   const :missing_key, T::Array[Integer], default: []
 end
 ```
-Note: we expect a `Params` instance to have `missing_key`, but the key is missing in the hash.
 
 Then we coerce the object `json_rb` into an instance of `Params`.
 ```ruby
