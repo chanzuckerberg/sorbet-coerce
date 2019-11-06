@@ -86,7 +86,7 @@ T::Coerce[T.nilable(Integer)].new.from('')
 # => nil
 ```
 But,
-```
+```ruby
 T::Coerce[T.nilable(String)].new.from('')
 # => ""
 ```
