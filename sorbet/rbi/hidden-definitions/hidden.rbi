@@ -887,6 +887,20 @@ module Coverage
   def self.running?(); end
 end
 
+class CustomTypeDoesNotRiaseHardError
+end
+
+class CustomTypeDoesNotRiaseHardError
+  def self.new(a); end
+end
+
+class CustomTypeRaisesHardError
+  def initialize(value); end
+end
+
+class CustomTypeRaisesHardError
+end
+
 class Date::Infinity
   def initialize(d=T.unsafe(nil)); end
 end
@@ -1297,6 +1311,7 @@ end
 
 module Exception2MessageMapper
   def bind(cl); end
+
 end
 
 Exception2MessageMapper::E2MM = Exception2MessageMapper
@@ -1462,7 +1477,25 @@ class Gem::DependencyInstaller
   def gems_to_install(*args, &block); end
 end
 
-Gem::DependencyResolver = Gem::Resolver
+class Gem::Resolver
+end
+
+Gem::DependencyResolver::Conflict = Gem::Resolver::Conflict
+
+Gem::DependencyResolver::DependencyConflict = Gem::Resolver::Conflict
+
+module Gem::Resolver::Molinillo
+end
+
+Gem::DependencyResolver::Molinillo::SpecificationProvider = Gem::Resolver::Molinillo::SpecificationProvider
+
+Gem::DependencyResolver::Molinillo::UI = Gem::Resolver::Molinillo::UI
+
+module Gem::Resolver::Molinillo
+end
+
+class Gem::Resolver
+end
 
 class Gem::Package
   def realpath(file); end
@@ -1519,8 +1552,6 @@ class Hash
   def default_proc(); end
 
   def default_proc=(default_proc); end
-
-  def dig(*_); end
 
   def fetch_values(*_); end
 
@@ -2550,6 +2581,16 @@ module ObjectSpace
   def self.undefine_finalizer(_); end
 end
 
+class ParamsWithSortError
+  def a(); end
+
+  def initialize(hash=T.unsafe(nil)); end
+end
+
+class ParamsWithSortError
+  def self.inherited(s); end
+end
+
 class Pathname
   def empty?(); end
 
@@ -2564,10 +2605,10 @@ module Polyfill
   VERSION = ::T.let(nil, ::T.untyped)
 end
 
-module Polyfill::Module::M47072915749180
+module Polyfill::Module::M47039293417260
 end
 
-module Polyfill::Module::M47072915749180
+module Polyfill::Module::M47039293417260
 end
 
 class Proc
@@ -5006,6 +5047,7 @@ end
 
 module Random::Formatter
   def alphanumeric(n=T.unsafe(nil)); end
+
   ALPHANUMERIC = ::T.let(nil, ::T.untyped)
 end
 
@@ -6954,6 +6996,7 @@ module URI
   def self.encode_www_form_component(str, enc=T.unsafe(nil)); end
 
   def self.get_encoding(label); end
+
 end
 
 class UnboundMethod
