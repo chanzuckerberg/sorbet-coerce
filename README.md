@@ -121,7 +121,7 @@ class Params < T::Struct
   const :a, Integer
 end
 
-T::Coerce[T::Array[Integer]].new.from('abc')
+T::Coerce[Integer].new.from('abc')
 # => T::CoercionError (Could not coerce value ("abc") of type (String) to desired type (Integer))
 
 T::Coerce[Params].new.from({a: 'abc'})
@@ -130,7 +130,7 @@ T::Coerce[Params].new.from({a: 'abc'})
 
 With soft errors,
 ```ruby
-T::Coerce[T::Array[Integer]].new.from('abc')
+T::Coerce[Integer].new.from('abc')
 # => "abc"
 
 T::Coerce[Params].new.from({a: 'abc'}) # require sorbet version ~> 0.4.4948 or this will still be treated as a hard error
