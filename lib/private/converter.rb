@@ -58,11 +58,7 @@ module T::Private
         _convert(value, type.aliased_type)
       elsif type < T::Struct
         args = _build_args(value, type.props)
-        begin
-          type.new(args)
-        rescue
-          nil
-        end
+        type.new(args)
       else
         _convert_simple(value, type)
       end
@@ -70,7 +66,8 @@ module T::Private
 
     sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_simple(value, type)
-      return nil if value.nil?
+      return nil if _nil_like?(value, type)
+
       safe_type_rule = T.let(nil, T.untyped)
 
       if type == T::Boolean
@@ -84,30 +81,23 @@ module T::Private
       end
       SafeType::coerce(value, safe_type_rule)
     rescue SafeType::EmptyValueError, SafeType::CoercionError
-      nil
+      value
     rescue SafeType::InvalidRuleError
-      begin
-        type.new(value)
-      rescue
-        nil
-      end
+      type.new(value)
     end
 
     sig { params(ary: T.untyped, type: T.untyped).returns(T.untyped) }
     def _convert_to_a(ary, type)
-      ary = [ary] unless ary.is_a?(::Array)
-      T.send(
-        'let',
-        ary.map { |value| _convert(value, type) },
-        T.const_get('Array')[type],
-      )
-    rescue TypeError
-      []
+      return [] if _nil_like?(ary, type)
+
+      # Checked by the T.let at root
+      ary.respond_to?(:map) ? ary.map { |value| _convert(value, type) } : ary
     end
 
     sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }
     def _build_args(args, props)
-      return {} if args.nil?
+      return {} if _nil_like?(args, Hash)
+
       args.map { |name, value|
         key = name.to_sym
         [
@@ -116,6 +106,11 @@ module T::Private
             nil : _convert(value, props[key][:type]),
         ]
       }.to_h.slice(*props.keys)
+    end
+
+    sig { params(value: T.untyped, type: T.untyped).returns(T::Boolean) }
+    def _nil_like?(value, type)
+      value.nil? || (value == '' && type != String)
     end
   end
 end
