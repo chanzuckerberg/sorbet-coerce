@@ -108,7 +108,7 @@ Sorbet-coerce throws a coercion error when it fails to convert a value into the 
 
 ## `null`, `''`, and `undefined`
 
-Sorbet-coerce is designed in the context of web development. When coercing into a `T::Struct`, the values that need to be coerced are often JSON-like. Suppose we're coercing object `json` into a `Param` instance
+Sorbet-coerce is designed in the context of web development. When coercing into a `T::Struct`, the values that need to be coerced are often JSON-like. Suppose we're coercing object `json` into a `Params` instance
 ```ruby
 json = {"a": "1", "null_filed": null, "blank_filed": ""}
 
@@ -119,12 +119,12 @@ class Params < T::Struct
   const :missing_key, T::Array[Integer], default: []
 end
 
-param = T::Coerce[Params].new.from(json)
+params = T::Coerce[Params].new.from(json)
 ```
 
-- When `json["null_filed"]` is `null`, `param.null_filed` is `nil`
-- When `json["blank_filed"]` is `""`, `param.blank_filed` is `nil`
-- When `json["missing_key"]` is `undefined`, `param.missing_key` will use the default value `[]`
+- When `json["null_filed"]` is `null`, `params.null_filed` is `nil`
+- When `json["blank_filed"]` is `""`, `params.blank_filed` is `nil`
+- When `json["missing_key"]` is `undefined`, `params.missing_key` will use the default value `[]`
 
 ## Contributing
 
