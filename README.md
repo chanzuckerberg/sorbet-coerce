@@ -145,7 +145,7 @@ json_js = {"a": "1", "null_field": null, "blank_field": "", "missing_key": undef
 ```
 to the server side and get a JSON hash
 ```ruby
-json_rb = {"a" => "1", "null_field" => nil, "blank_field" => ""} # ruby
+json_rb = {"a" => "1", "null_field" => nil, "blank_field" => ""} # ruby, note `missing_key` is removed from the hash
 ```
 We expect the object to have shape
 ```ruby
