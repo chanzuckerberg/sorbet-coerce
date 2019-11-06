@@ -104,7 +104,7 @@ More examples: [nested params](https://github.com/chanzuckerberg/sorbet-coerce/b
 
 ## Coercion Error
 
-Sorbet-coerce throws a coercion error when it fails to convert a value into the specified type. The error is [configurable](https://sorbet.org/docs/runtime#changing-the-runtime-behavior) through `T:: Configuration`. In an environment where type errors are configured to be silent (referred to soft errors), when the coercion fails (or constructing T::Struct fails), `T::Coerce` will return the original value instead of actually raising the errors (referred to hard errors).
+Sorbet-coerce throws a coercion error when it fails to convert a value into the specified type. The error is [configurable](https://sorbet.org/docs/runtime#changing-the-runtime-behavior) through `T::Configuration`. In an environment where type errors are configured to be silent (referred to soft errors), when the coercion fails (or constructing `T::Struct` fails), `T::Coerce` will return the original value instead of actually raising the errors (referred to hard errors).
 
 ## `null`, `''`, and `undefined`
 
