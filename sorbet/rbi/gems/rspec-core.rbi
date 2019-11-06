@@ -254,6 +254,7 @@ class RSpec::Core::Notifications::StartNotification < Struct
   def load_time; end
   def load_time=(_); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -262,6 +263,7 @@ class RSpec::Core::Notifications::ExampleNotification < Struct
   def example=(_); end
   def self.[](*arg0); end
   def self.for(example); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -301,6 +303,7 @@ class RSpec::Core::Notifications::GroupNotification < Struct
   def group; end
   def group=(_); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -308,6 +311,7 @@ class RSpec::Core::Notifications::MessageNotification < Struct
   def message; end
   def message=(_); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -317,6 +321,7 @@ class RSpec::Core::Notifications::SeedNotification < Struct
   def seed=(_); end
   def seed_used?; end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
   def used; end
@@ -346,6 +351,7 @@ class RSpec::Core::Notifications::SummaryNotification < Struct
   def pending_examples=(_); end
   def rerun_argument_for(example); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
   def totals_line; end
@@ -373,6 +379,7 @@ class RSpec::Core::Notifications::DeprecationNotification < Struct
   def replacement=(_); end
   def self.[](*arg0); end
   def self.from_hash(data); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -433,6 +440,7 @@ class RSpec::Core::Hooks::Hook < Struct
   def options; end
   def options=(_); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -642,6 +650,7 @@ module RSpec::Core::HashImitatable
   def set_value(name, value); end
   def shift(*args, &block); end
   def size(*args, &block); end
+  def slice(*args, &block); end
   def slice_after(*args, &block); end
   def slice_before(*args, &block); end
   def slice_when(*args, &block); end
@@ -656,6 +665,8 @@ module RSpec::Core::HashImitatable
   def to_hash(*args, &block); end
   def to_proc(*args, &block); end
   def to_set(*args, &block); end
+  def transform_keys!(*args, &block); end
+  def transform_keys(*args, &block); end
   def transform_values!(*args, &block); end
   def transform_values(*args, &block); end
   def uniq(*args, &block); end
@@ -863,6 +874,7 @@ class RSpec::Core::Formatters::DeprecationFormatter::SpecifiedDeprecationMessage
   def initialize(data); end
   def output_formatted(str); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
   def to_s; end
@@ -873,6 +885,7 @@ end
 class RSpec::Core::Formatters::DeprecationFormatter::GeneratedDeprecationMessage < Struct
   def initialize(data); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
   def to_s; end
@@ -957,10 +970,12 @@ class RSpec::Core::OutputWrapper
   def pid(*args, &block); end
   def pos(*args, &block); end
   def pos=(*args, &block); end
+  def pread(*args, &block); end
   def print(*args, &block); end
   def printf(*args, &block); end
   def putc(*args, &block); end
   def puts(*args, &block); end
+  def pwrite(*args, &block); end
   def read(*args, &block); end
   def read_nonblock(*args, &block); end
   def readbyte(*args, &block); end
@@ -1350,6 +1365,7 @@ class RSpec::Core::Invocations::PrintHelp < Struct
   def parser; end
   def parser=(_); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end

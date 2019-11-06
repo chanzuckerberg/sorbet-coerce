@@ -12,6 +12,7 @@ before_install:
 - gem install bundler -v 2.0.1 --no-doc
 - gem install bundler -v 1.17.3 --no-doc
 script:
+- mv rbi/* lib/ && srb tc && mv lib/*.rbi rbi/
 - bundle exec rspec
 deploy:
   provider: rubygems
