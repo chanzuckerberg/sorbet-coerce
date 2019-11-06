@@ -104,6 +104,28 @@ More examples: [nested params](https://github.com/chanzuckerberg/sorbet-coerce/b
 
 ## Coercion Error
 
+Sorbet-coerce throws a coercion error when it fails to convert a value into the specified type. The error is [configurable](https://sorbet.org/docs/runtime#changing-the-runtime-behavior) through `T:: Configuration`. In an environment where type errors are configured to be silent (referred to soft errors), when the coercion fails (or constructing T::Struct fails), `T::Coerce` will return the original value instead of actually raising the errors (referred to hard errors).
+
+## `null`, `''`, and `undefined`
+
+Sorbet-coerce is designed in the context of web development. When coercing into a `T::Struct`, the values that need to be coerced are often JSON-like. Suppose we're coercing object `json` into a `Param` instance
+```ruby
+json = {"a": "1", "null_filed": null, "blank_filed": ""}
+
+class Params < T::Struct
+  const :a, Integer
+  const :null_filed, T.nilable(Integer)
+  const :blank_filed, T.nilable(Integer)
+  const :missing_key, T::Array[Integer], default: []
+end
+
+param = T::Coerce[Params].new.from(json)
+```
+
+- When `json["null_filed"]` is `null`, `param.null_filed` is `nil`
+- When `json["blank_filed"]` is `""`, `param.blank_filed` is `nil`
+- When `json["missing_key"]` is `undefined`, `param.missing_key` will use the default value `[]`
+
 ## Contributing
 
 Contributions and ideas are welcome! Please see [our contributing guide](CONTRIBUTING.md) and don't hesitate to open an issue or send a pull request to improve the functionality of this gem.
