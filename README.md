@@ -141,7 +141,7 @@ T::Coerce[Params].new.from({a: 'abc'}) # require sorbet version ~> 0.4.4948 or t
 
 Sorbet-coerce is designed in the context of web development. When coercing into a `T::Struct`, the values that need to be coerced are often JSON-like. Suppose we send a JavaScript object
 ```javascript
-json_js = {"a": "1", "null_field": null, "blank_field": ""} // javascript
+json_js = {"a": "1", "null_field": null, "blank_field": "", "missing_key": undefined} // javascript
 ```
 to the server side and get a JSON hash
 ```ruby
