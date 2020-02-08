@@ -3,7 +3,10 @@ require 'safe_type'
 require 'sorbet-runtime'
 require 'polyfill'
 
-using Polyfill(Hash: %w[#slice])
+using Polyfill(
+  Hash: %w[#slice],
+  Symbol: %w[#match?],
+)
 
 module T; end
 
