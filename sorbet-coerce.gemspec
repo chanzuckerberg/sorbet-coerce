@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.files         += Dir.glob('spec/**/*')
   s.files         += Dir.glob('rbi/**/*')
 
-  s.required_ruby_version = ['>= 2.3.0']
+  s.required_ruby_version = ['>= 2.3.0', '< 2.7.0']
 
   s.add_dependency 'sorbet', '~> 0.4.4704'
 
