@@ -46,7 +46,8 @@ describe T::Coerce do
       }.to raise_error(StandardError)
       expect(T::Coerce[CustomTypeDoesNotRiaseHardError].new.from(1)).to eql(1)
 
-      if Gem.loaded_specs['sorbet-runtime'].version >= Gem::Version.new('0.4.4948')
+      sorbet_version = Gem.loaded_specs['sorbet-runtime'].version
+      if sorbet_version >= Gem::Version.new('0.4.4948') && sorbet_version < Gem::Version.new('0.5.0')
         expect(T::Coerce[ParamsWithSortError].new.from({a: invalid_arg}).a).to eql(invalid_arg)
       end
     end
