@@ -22,7 +22,7 @@ gem 'sorbet-coerce'
 
 ## Usage
 
-`T::Coerce` takes a valid sorbet type and coerce the input value into that type. It'll return a statically-typed object or throws `T::CoercionError` error if the coercion fails.
+`T::Coerce` takes a valid sorbet type and coerce the input value into that type. It'll return a statically-typed object or throws errors when the coercion process cannot be handled as expected (more details in the [Errors](#errors) section).
 ```ruby
 converted = T::Coerce[<Type>].new.from(<value>)
 
@@ -111,9 +111,29 @@ T::Coerce[Params].new.from({id: '1'})
 ```
 More examples: [nested params](https://github.com/chanzuckerberg/sorbet-coerce/blob/a56c0c6a363bb49b11e77ac57893afc3d54c6b8c/spec/nested_spec.rb#L18-L26)
 
-## Coercion Error
+## Errors
+We will get `CoercionError`, `ShapeError`, or `TypeError` when the coercion doesn't work successfully.
 
-Sorbet-coerce throws a coercion error when it fails to convert a value into the specified type. The error is [configurable](https://sorbet.org/docs/runtime#changing-the-runtime-behavior) through `T::Configuration`. In an environment where type errors are configured to be silent (referred to soft errors), when the coercion fails (or constructing `T::Struct` fails), `T::Coerce` will return the original value instead of actually raising the errors (referred to hard errors).
+#### `T::Coerce::CoercionError` (configurable)
+It raises a coercion error when it fails to convert a value into the specified type (i.e. `'bad string args' to Integer`). This can be configured globally or at each call-site. When configured to `true`, it will fill the result with `nil` instead of raising the errors.
+```ruby
+T::Coerce::Configuration.raise_coercion_error = false # default to true
+```
+We can use an inline flag to overwrite the global configuration:
+```ruby
+T::Coerce[T.nilable(Integer)].new.from('abc', raise_coercion_error: false)
+# => nil
+```
+
+#### `T::Coerce::ShapeError` (NOT configurable)
+It raises a shape error when the shape of the input does not match the shape of input type (i.e. `'1' to T::Array[Integer]` or to `T::Struct`). This cannot be configured and always raise an error.
+
+#### `TypeError` (configurable)
+It raises a type error when the coerced input does not match the input type. This error is raised by Sorbet and can be configured through [`T::Configuration`](https://sorbet.org/docs/tconfiguration).
+
+
+#### Soft Errors vs. Hard Errors
+In an environment where type errors and coercion errors are configured to be silent (referred to as soft errors), when the coercion fails, `T::Coerce` will fill the result with `nil` instead of actually raising the errors (referred to hard errors).
 
 With hard errors,
 ```ruby
@@ -121,20 +141,29 @@ class Params < T::Struct
   const :a, Integer
 end
 
-T::Coerce[Integer].new.from('abc')
-# => T::CoercionError (Could not coerce value ("abc") of type (String) to desired type (Integer))
+T::Coerce[Integer].new.from(nil)
+# => TypeError Exception: T.let: Expected type Integer, got type NilClass
 
-T::Coerce[Params].new.from({a: 'abc'})
-# => T::CoercionError: (Could not coerce value ({:a=>"abc"}) of type (Hash) to desired type (Params))
+T::Coerce[Integer].new.from('abc')
+# => T::Coerce::CoercionError Exception: Could not coerce value ("abc") of type (String) to desired type (Integer)
+
+T::Coerce[T.nilable(Integer)].new.from('abc', raise_coercion_error: false)
+# => nil
+
+T::Coerce[Params].new.from({a: 'abc'}, raise_coercion_error: false)
+# => TypeError Exception: Parameter 'a': Can't set Params.a to nil (instance of NilClass) - need a Integer
 ```
 
 With soft errors,
 ```ruby
-T::Coerce[Integer].new.from('abc')
-# => "abc"
+T::Coerce[Integer].new.from('abc', raise_coercion_error: false)
+# => nil
 
-T::Coerce[Params].new.from({a: 'abc'}) # require sorbet version ~> 0.4.4948 or this will still be treated as a hard error
-# => <Params a="abc">
+T::Coerce[Params].new.from({a: 'abc'}, raise_coercion_error: false) # require sorbet version ~> 0.4.4948
+# => <Params a=nil>
+
+T::Coerce[Params].new.from({a: 'abc'}, raise_coercion_error: true)
+# T::Coerce::CoercionError Exception: Could not coerce value ("abc") of type (String) to desired type (Integer)
 ```
 
 ## `null`, `''`, and `undefined`

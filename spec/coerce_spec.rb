@@ -136,19 +136,19 @@ describe T::Coerce do
     end
 
     it 'coreces correctly' do
-      expect{T::Coerce[Integer].new.from(nil)}.to raise_error(T::CoercionError)
+      expect{T::Coerce[Integer].new.from(nil)}.to raise_error(TypeError)
       expect(T::Coerce[T.nilable(Integer)].new.from(nil) || 1).to eql 1
       expect(T::Coerce[Integer].new.from(2)).to eql 2
       expect(T::Coerce[Integer].new.from('1.0')).to eql 1
 
-      expect{T::Coerce[T.nilable(Integer)].new.from('invalid integer string')}.to raise_error(T::CoercionError)
+      expect{T::Coerce[T.nilable(Integer)].new.from('invalid integer string')}.to raise_error(T::Coerce::CoercionError)
       expect(T::Coerce[Float].new.from('1.0')).to eql 1.0
 
       expect(T::Coerce[T::Boolean].new.from('false')).to be false
       expect(T::Coerce[T::Boolean].new.from('true')).to be true
 
       expect(T::Coerce[T.nilable(Integer)].new.from('')).to be nil
-      expect{T::Coerce[T.nilable(Integer)].new.from([])}.to raise_error(T::CoercionError)
+      expect{T::Coerce[T.nilable(Integer)].new.from([])}.to raise_error(T::Coerce::CoercionError)
       expect(T::Coerce[T.nilable(String)].new.from('')).to eql ''
     end
   end
@@ -159,7 +159,8 @@ describe T::Coerce do
       expect(T::Coerce[CustomType].new.from(1).a).to be 1
 
       expect{T::Coerce[UnsupportedCustomType].new.from(1)}.to raise_error(ArgumentError)
-      expect{T::Coerce[CustomType2].new.from(1)}.to raise_error(T::CoercionError)
+      # CustomType2.new(anything) returns Integer 1; 1.is_a?(CustomType2) == false
+      expect{T::Coerce[CustomType2].new.from(1)}.to raise_error(TypeError)
     end
   end
 
@@ -167,11 +168,11 @@ describe T::Coerce do
     it 'coreces correctly' do
       expect(T::Coerce[T::Array[Integer]].new.from(nil)).to eql []
       expect(T::Coerce[T::Array[Integer]].new.from('')).to eql []
-      expect{T::Coerce[T::Array[Integer]].new.from('not an array')}.to raise_error(T::CoercionError)
-      expect{T::Coerce[T::Array[Integer]].new.from('1')}.to raise_error(T::CoercionError)
+      expect{T::Coerce[T::Array[Integer]].new.from('not an array')}.to raise_error(T::Coerce::ShapeError)
+      expect{T::Coerce[T::Array[Integer]].new.from('1')}.to raise_error(T::Coerce::ShapeError)
       expect(T::Coerce[T::Array[Integer]].new.from(['1', '2', '3'])).to eql [1, 2, 3]
-      expect{T::Coerce[T::Array[Integer]].new.from(['1', 'invalid', '3'])}.to raise_error(T::CoercionError)
-      expect{T::Coerce[T::Array[Integer]].new.from({a: 1})}.to raise_error(T::CoercionError)
+      expect{T::Coerce[T::Array[Integer]].new.from(['1', 'invalid', '3'])}.to raise_error(T::Coerce::CoercionError)
+      expect{T::Coerce[T::Array[Integer]].new.from({a: 1})}.to raise_error(T::Coerce::CoercionError)
 
       infos = T::Coerce[T::Array[ParamInfo]].new.from([{name: 'a', skill_ids: []}])
       T.assert_type!(infos, T::Array[ParamInfo])
@@ -180,6 +181,10 @@ describe T::Coerce do
       infos = T::Coerce[T::Array[ParamInfo]].new.from([{name: 'b', skill_ids: []}])
       T.assert_type!(infos, T::Array[ParamInfo])
       expect(infos.first.name).to eql 'b'
+
+      expect {
+        T::Coerce[ParamInfo2].new.from({a: nil, b: nil})
+      }.to raise_error(TypeError)
     end
   end
 

@@ -6,8 +6,8 @@ module T
 
     Elem = type_member
 
-    sig { params(args: T.untyped).returns(Elem) }
-    def from(args); end
+    sig { params(args: T.untyped, raise_value_error: T.nilable(T::Boolean)).returns(Elem) }
+    def from(args, raise_value_error: nil); end
   end
 
   module Private

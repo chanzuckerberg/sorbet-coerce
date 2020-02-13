@@ -7,6 +7,10 @@ describe T::Coerce do
     let(:ignore_error) { Proc.new {} }
 
     before(:each) do
+      allow(T::Coerce::Configuration).to receive(
+        :raise_coercion_error,
+      ).and_return(false)
+
       allow(T::Configuration).to receive(
         :inline_type_error_handler,
       ).and_return(ignore_error)
@@ -34,12 +38,19 @@ describe T::Coerce do
       def self.new(a); 1; end
     end
 
+    let(:invalid_arg) { 'invalid integer string' }
+
+    it 'overwrites the global config when inline config is set' do
+      expect {
+        T::Coerce[Integer].new.from(invalid_arg, raise_coercion_error: true)
+      }.to raise_error(T::Coerce::CoercionError)
+    end
+
     it 'works as expected' do
-      invalid_arg = 'invalid integer string'
-      expect(T::Coerce[Integer].new.from(invalid_arg)).to eql(invalid_arg)
-      expect(T::Coerce[T::Array[Integer]].new.from(1)).to be 1
-      expect(T::Coerce[T::Array[Integer]].new.from(invalid_arg)).to eql(invalid_arg)
-      expect(T::Coerce[T::Array[Integer]].new.from({a: 1})).to eql([[:a, 1]])
+      expect(T::Coerce[Integer].new.from(invalid_arg)).to eql(nil)
+
+      expect{T::Coerce[T::Array[Integer]].new.from(1)}.to raise_error(T::Coerce::ShapeError)
+      expect(T::Coerce[T::Array[Integer]].new.from({a: 1})).to eql([nil])
 
       expect {
         T::Coerce[CustomTypeRaisesHardError].new.from(1)
@@ -47,8 +58,8 @@ describe T::Coerce do
       expect(T::Coerce[CustomTypeDoesNotRiaseHardError].new.from(1)).to eql(1)
 
       sorbet_version = Gem.loaded_specs['sorbet-runtime'].version
-      if sorbet_version >= Gem::Version.new('0.4.4948') && sorbet_version < Gem::Version.new('0.5.0')
-        expect(T::Coerce[ParamsWithSortError].new.from({a: invalid_arg}).a).to eql(invalid_arg)
+      if sorbet_version >= Gem::Version.new('0.4.4948')
+        expect(T::Coerce[ParamsWithSortError].new.from({a: invalid_arg}).a).to eql(nil)
       end
     end
   end
