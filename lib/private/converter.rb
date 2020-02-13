@@ -5,8 +5,6 @@ require 'polyfill'
 
 using Polyfill(Hash: %w[#slice])
 
-module T; end
-
 module T::Private
   class Converter
     extend T::Sig
@@ -22,12 +20,12 @@ module T::Private
     ], T.untyped)
 
     protected
-    sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
-    def _convert(value, type)
+    sig { params(value: T.untyped, type: T.untyped, raise_coercion_error: T::Boolean).returns(T.untyped) }
+    def _convert(value, type, raise_coercion_error)
       if type.is_a?(T::Types::TypedArray)
-        _convert_to_a(value, type.type)
+        _convert_to_a(value, type.type, raise_coercion_error)
       elsif type.is_a?(T::Types::Simple)
-        _convert(value, type.raw_type)
+        _convert(value, type.raw_type, raise_coercion_error)
       elsif type.is_a?(T::Types::Union)
         true_idx = T.let(nil, T.nilable(Integer))
         false_idx = T.let(nil, T.nilable(Integer))
@@ -49,23 +47,23 @@ module T::Private
         )
 
         if !true_idx.nil? && !false_idx.nil?
-          _convert_simple(value, T::Boolean)
+          _convert_simple(value, T::Boolean, raise_coercion_error)
         else
-          _convert(value, type.types[nil_idx == 0 ? 1 : 0])
+          _convert(value, type.types[nil_idx == 0 ? 1 : 0], raise_coercion_error)
         end
       elsif Object.const_defined?('T::Private::Types::TypeAlias') &&
             type.is_a?(T::Private::Types::TypeAlias)
-        _convert(value, type.aliased_type)
+        _convert(value, type.aliased_type, raise_coercion_error)
       elsif type < T::Struct
-        args = _build_args(value, type.props)
+        args = _build_args(value, type, raise_coercion_error)
         type.new(args)
       else
-        _convert_simple(value, type)
+        _convert_simple(value, type, raise_coercion_error)
       end
     end
 
-    sig { params(value: T.untyped, type: T.untyped).returns(T.untyped) }
-    def _convert_simple(value, type)
+    sig { params(value: T.untyped, type: T.untyped, raise_coercion_error: T::Boolean).returns(T.untyped) }
+    def _convert_simple(value, type, raise_coercion_error)
       return nil if _nil_like?(value, type)
 
       safe_type_rule = T.let(nil, T.untyped)
@@ -81,29 +79,41 @@ module T::Private
       end
       SafeType::coerce(value, safe_type_rule)
     rescue SafeType::EmptyValueError, SafeType::CoercionError
-      value
+      if raise_coercion_error
+        raise T::Coerce::CoercionError.new(value, type)
+      else
+        nil
+      end
     rescue SafeType::InvalidRuleError
       type.new(value)
     end
 
-    sig { params(ary: T.untyped, type: T.untyped).returns(T.untyped) }
-    def _convert_to_a(ary, type)
+    sig { params(ary: T.untyped, type: T.untyped, raise_coercion_error: T::Boolean).returns(T.untyped) }
+    def _convert_to_a(ary, type, raise_coercion_error)
       return [] if _nil_like?(ary, type)
 
-      # Checked by the T.let at root
-      ary.respond_to?(:map) ? ary.map { |value| _convert(value, type) } : ary
+      unless ary.respond_to?(:map)
+        raise T::Coerce::ShapeError.new(ary, type)
+      end
+
+      ary.map { |value| _convert(value, type, raise_coercion_error) }
     end
 
-    sig { params(args: T.untyped, props: T.untyped).returns(T.untyped) }
-    def _build_args(args, props)
+    sig { params(args: T.untyped, type: T.untyped, raise_coercion_error: T::Boolean).returns(T.untyped) }
+    def _build_args(args, type, raise_coercion_error)
       return {} if _nil_like?(args, Hash)
 
+      unless args.respond_to?(:each_pair)
+        raise T::Coerce::ShapeError.new(args, type)
+      end
+
+      props = type.props
       args.map { |name, value|
         key = name.to_sym
         [
           key,
           (!props.include?(key) || value.nil?) ?
-            nil : _convert(value, props[key][:type]),
+            nil : _convert(value, props[key][:type], raise_coercion_error),
         ]
       }.to_h.slice(*props.keys)
     end
