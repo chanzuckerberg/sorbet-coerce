@@ -3,11 +3,12 @@ env:
     secure: c/H6fs0danhoA80/n4lr6YLcYE8rGSW3hVhnFg7CNOKkUIUrqnUtTESvqn8gK6yo97RKw237aEQFIiG+SJx/eZLbfOomSrB5zcY1Lk0dovKYvfk7eFtnWpNAnpuSmZmyQkN06eXAhqgVuZhiHIEqy4AI8zVz/tXvbXPUK9SP/Vxr9pS4f2BqDIGGgkr0Agbeepf8b5fA/XmypQ7wEKcuMT40PH3sfGom4iK/QXW610YjyioFGcQXryrooD/OX58YGSzQA7qmVOIJj9hiF9iKC5mC71WWBLM7W+B6KpRPnmaa0Kmmgspy0w4J2RZw/SyRMByFjWXdM9OznvGlsGGWXN8u+pEFVUCKAcxUPD0kA5Nh8kLP8yxoVT9QMOgdU9K3oxNT45Lg9sITdT/54FU2/Su30MZWOI1JbqWDL3iCOaI/2ozMXhaklm6MAEbbcaSSoTbuWlsPbg1JTjYH8VA0Np5r2BJ2nLttIlFZanaPRa3HQ8F00auHfdxhe6T+6mEjb4etfOyGMjXQn/FZ4DfwcK6KESfyu6/6UrEgy87Oz3Nads/a+42S8NYJkHl4FC6tMzbVY+aGlRUsk0DF1MjHOSBVW7solh+TcJShIfSZTVmizZ8WVCpPHyxBRoqIqk3a3jUQatgYhaKYiwzI22m4qSrHAWtWXAs7TZ8BU4pxjNA=
 language: ruby
 rvm:
-- 2.3
 - 2.4
 - 2.5
 - 2.6
 - 2.7
+- ruby-head
+
 before_install:
 - gem install bundler -v 2.0.1 --no-doc
 - gem install bundler -v 1.17.3 --no-doc
