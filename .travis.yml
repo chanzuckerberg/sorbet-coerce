@@ -17,6 +17,7 @@ before_install:
 script:
 - mv rbi/* lib/ && srb tc && mv lib/*.rbi rbi/
 - bundle exec rspec
+- bundle exec ruby spec/sorbet_test_cases.rb
 deploy:
   provider: rubygems
   gem: sorbet-coerce
