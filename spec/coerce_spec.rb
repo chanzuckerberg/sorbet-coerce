@@ -188,6 +188,22 @@ describe T::Coerce do
     end
   end
 
+  context 'when dealing with hashes'  do
+    it 'coreces correctly' do
+      expect(T::Coerce[T::Hash[String, T::Boolean]].new.from({
+        a: 'true',
+        b: 'false',
+      })).to eql({
+        'a' => true,
+        'b' => false,
+      })
+
+      expect {
+        T::Coerce[T::Hash[String, Integer]].new.from(1)
+      }.to raise_error(T::Coerce::ShapeError)
+    end
+  end
+
   context 'when given a type alias' do
     MyType = T.type_alias(T::Boolean)
 

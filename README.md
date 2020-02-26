@@ -35,10 +35,10 @@ T.reveal_type(converted) # <Type>
 - `T::Boolean`
 - `T.nilable(<supported type>)`
 - `T::Array[<supported type>]`
+- `T::Hash`
 - Subclasses of `T::Struct`
 
 We don't support
-- `T::Hash` (currently)
 - `T::Enum` (currently)
 - Experimental features (tuples and shapes)
 - `T.any(<supported type>, ...)`: A union type other than `T.nilable`
