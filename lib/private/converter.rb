@@ -51,6 +51,17 @@ module T::Private
         else
           _convert(value, type.types[nil_idx == 0 ? 1 : 0], raise_coercion_error)
         end
+      elsif type.is_a?(T::Types::TypedHash)
+        unless value.respond_to?(:map)
+          raise T::Coerce::ShapeError.new(value, type)
+        end
+
+        value.map do |k, v|
+          [
+            _convert(k, type.keys, raise_coercion_error),
+            _convert(v, type.values, raise_coercion_error),
+          ]
+        end.to_h
       elsif Object.const_defined?('T::Private::Types::TypeAlias') &&
             type.is_a?(T::Private::Types::TypeAlias)
         _convert(value, type.aliased_type, raise_coercion_error)
