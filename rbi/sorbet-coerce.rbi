@@ -8,6 +8,9 @@ module T
 
     sig { params(args: T.untyped, raise_coercion_error: T.nilable(T::Boolean)).returns(Elem) }
     def from(args, raise_coercion_error: nil); end
+
+    class CoercionError < StandardError; end
+    class ShapeError < StandardError; end
   end
 
   module Private
