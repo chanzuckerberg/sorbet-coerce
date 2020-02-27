@@ -5145,7 +5145,7 @@ module Readline
 end
 
 class Regexp
-  def match?(*_); end
+  def match?(arg0, arg1=T.unsafe(nil)); end
 end
 
 class Regexp
