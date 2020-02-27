@@ -1,4 +1,8 @@
 # typed: true
+module SafeType
+  class CoercionError < StandardError; end
+end
+
 module T
   module Coerce
     extend T::Sig
@@ -8,6 +12,9 @@ module T
 
     sig { params(args: T.untyped, raise_coercion_error: T.nilable(T::Boolean)).returns(Elem) }
     def from(args, raise_coercion_error: nil); end
+
+    class CoercionError < SafeType::CoercionError; end
+    class ShapeError < SafeType::CoercionError; end
   end
 
   module Private
