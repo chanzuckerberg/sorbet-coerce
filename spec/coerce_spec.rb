@@ -27,6 +27,10 @@ describe T::Coerce do
       const :a, Integer, default: 1
     end
 
+    class HashParams < T::Struct
+      const :myhash, T::Hash[String, Integer]
+    end
+
     class CustomType
       attr_reader :a
 
@@ -197,6 +201,18 @@ describe T::Coerce do
         'a' => true,
         'b' => false,
       })
+
+      expect(T::Coerce[HashParams].new.from({
+        myhash: {'a' => '1', 'b' => '2'},
+      }).myhash).to eql({'a' => 1, 'b' => 2})
+
+
+      expect {
+        T::Coerce[T::Hash[String, T::Boolean]].new.from({
+          a: 'invalid',
+          b: 'false',
+        })
+      }.to raise_error(T::Coerce::CoercionError)
 
       expect {
         T::Coerce[T::Hash[String, Integer]].new.from(1)
