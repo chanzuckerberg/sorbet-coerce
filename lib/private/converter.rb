@@ -6,7 +6,9 @@ require 'polyfill'
 
 using Polyfill(Hash: %w[#slice])
 
-module T::Private
+module TypeCoerce; end
+
+module TypeCoerce::Private
   class Converter
     extend T::Sig
 
@@ -58,7 +60,7 @@ module T::Private
         end
       elsif type.is_a?(T::Types::TypedHash)
         unless value.respond_to?(:map)
-          raise T::Coerce::ShapeError.new(value, type)
+          raise TypeCoerce::ShapeError.new(value, type)
         end
 
         value.map do |k, v|
@@ -96,7 +98,7 @@ module T::Private
       SafeType::coerce(value, safe_type_rule)
     rescue SafeType::EmptyValueError, SafeType::CoercionError
       if raise_coercion_error
-        raise T::Coerce::CoercionError.new(value, type)
+        raise TypeCoerce::CoercionError.new(value, type)
       else
         nil
       end
@@ -109,7 +111,7 @@ module T::Private
       return [] if _nil_like?(ary, type)
 
       unless ary.respond_to?(:map)
-        raise T::Coerce::ShapeError.new(ary, type)
+        raise TypeCoerce::ShapeError.new(ary, type)
       end
 
       ary.map { |value| _convert(value, type, raise_coercion_error) }
@@ -120,7 +122,7 @@ module T::Private
       return {} if _nil_like?(args, Hash)
 
       unless args.respond_to?(:each_pair)
-        raise T::Coerce::ShapeError.new(args, type)
+        raise TypeCoerce::ShapeError.new(args, type)
       end
 
       props = type.props
