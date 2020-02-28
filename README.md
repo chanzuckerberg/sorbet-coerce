@@ -36,6 +36,7 @@ T.reveal_type(converted) # <Type>
 - `T.nilable(<supported type>)`
 - `T::Array[<supported type>]`
 - `T::Hash[<supported type>, <supported type>]`
+- `T::Set[<supported type>]`
 - Subclasses of `T::Struct`
 
 We don't support

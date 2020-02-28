@@ -1,5 +1,6 @@
 # typed: strict
 require 'safe_type'
+require 'set'
 require 'sorbet-runtime'
 require 'polyfill'
 
@@ -24,6 +25,8 @@ module T::Private
     def _convert(value, type, raise_coercion_error)
       if type.is_a?(T::Types::TypedArray)
         _convert_to_a(value, type.type, raise_coercion_error)
+      elsif type.is_a?(T::Types::TypedSet)
+        Set.new(_convert_to_a(value, type.type, raise_coercion_error))
       elsif type.is_a?(T::Types::Simple)
         _convert(value, type.raw_type, raise_coercion_error)
       elsif type.is_a?(T::Types::Union)

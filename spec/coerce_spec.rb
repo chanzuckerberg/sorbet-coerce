@@ -192,7 +192,7 @@ describe T::Coerce do
     end
   end
 
-  context 'when dealing with hashes'  do
+  context 'when dealing with hashes' do
     it 'coreces correctly' do
       expect(T::Coerce[T::Hash[String, T::Boolean]].new.from({
         a: 'true',
@@ -216,6 +216,22 @@ describe T::Coerce do
 
       expect {
         T::Coerce[T::Hash[String, Integer]].new.from(1)
+      }.to raise_error(T::Coerce::ShapeError)
+    end
+  end
+
+  context 'when dealing with sets' do
+    it 'coreces correctly' do
+      expect(T::Coerce[T::Set[Integer]].new.from(
+        Set.new(['1', '2', '3'])
+      )).to eq Set.new([1, 2, 3])
+
+      expect {
+        T::Coerce[T::Set[Integer]].new.from(Set.new(['1', 'invalid', '3']))
+      }.to raise_error(T::Coerce::CoercionError)
+
+      expect {
+        T::Coerce[T::Set[Integer]].new.from(1)
       }.to raise_error(T::Coerce::ShapeError)
     end
   end
