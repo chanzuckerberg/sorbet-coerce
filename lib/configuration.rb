@@ -1,7 +1,7 @@
 # typed: true
 require 'sorbet-runtime'
 
-module T::Coerce
+module TypeCoerce
   module Configuration
     class << self
       extend T::Sig
@@ -12,4 +12,4 @@ module T::Coerce
   end
 end
 
-T::Coerce::Configuration.raise_coercion_error = true
+TypeCoerce::Configuration.raise_coercion_error = true
