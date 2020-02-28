@@ -32,6 +32,7 @@ T.reveal_type(converted) # <Type>
 ### Supported Types
 - Simple Types
 - Custom Types: If the values can be coerced by `.new`
+- `T.untyped` (an escape hatch to ignore & return the given value)
 - `T::Boolean`
 - `T.nilable(<supported type>)`
 - `T::Array[<supported type>]`
