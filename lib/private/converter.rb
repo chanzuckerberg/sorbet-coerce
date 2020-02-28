@@ -23,7 +23,9 @@ module T::Private
     protected
     sig { params(value: T.untyped, type: T.untyped, raise_coercion_error: T::Boolean).returns(T.untyped) }
     def _convert(value, type, raise_coercion_error)
-      if type.is_a?(T::Types::TypedArray)
+      if type.is_a?(T::Types::Untyped)
+        value
+      elsif type.is_a?(T::Types::TypedArray)
         _convert_to_a(value, type.type, raise_coercion_error)
       elsif type.is_a?(T::Types::TypedSet)
         Set.new(_convert_to_a(value, type.type, raise_coercion_error))
