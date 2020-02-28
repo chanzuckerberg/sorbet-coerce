@@ -243,4 +243,11 @@ describe T::Coerce do
       expect(T::Coerce[MyType].new.from('false')).to be false
     end
   end
+
+  it 'works with T.untyped' do
+    expect(T::Coerce[T.untyped].new.from(1)).to eql 1
+
+    obj = CustomType.new(1)
+    expect(T::Coerce[T::Hash[String, T.untyped]].new.from({a: obj})).to eq({'a' => obj})
+  end
 end
