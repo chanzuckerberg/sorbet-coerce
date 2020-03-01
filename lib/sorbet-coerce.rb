@@ -1,4 +1,4 @@
-# typed: strict
+# typed: ignore
 require_relative 'configuration'
 require 'private/converter'
 require 'safe_type'

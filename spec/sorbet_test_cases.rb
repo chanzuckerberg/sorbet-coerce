@@ -1,4 +1,4 @@
-# typed: true
+# typed: ignore
 require 'sorbet-coerce'
 
 T.assert_type!(TypeCoerce[Integer].new.from('1'), Integer)

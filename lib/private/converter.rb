@@ -1,4 +1,4 @@
-# typed: strict
+# typed: ignore
 require 'safe_type'
 require 'set'
 require 'sorbet-runtime'

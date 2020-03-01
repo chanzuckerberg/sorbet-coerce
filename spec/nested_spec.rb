@@ -1,4 +1,4 @@
-# typed: false
+# typed: ignore
 require 'sorbet-coerce'
 require 'sorbet-runtime'
 
