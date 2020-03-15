@@ -97,15 +97,18 @@ module TypeCoerce::Private
       else
         safe_type_rule = type
       end
-      SafeType::coerce(value, safe_type_rule)
+
+      if safe_type_rule.is_a?(SafeType::Rule)
+        SafeType::coerce(value, safe_type_rule)
+      else
+        type.new(value)
+      end
     rescue SafeType::EmptyValueError, SafeType::CoercionError
       if raise_coercion_error
         raise TypeCoerce::CoercionError.new(value, type)
       else
         nil
       end
-    rescue SafeType::InvalidRuleError
-      type.new(value)
     end
 
     sig { params(ary: T.untyped, type: T.untyped, raise_coercion_error: T::Boolean).returns(T.untyped) }
