@@ -75,5 +75,14 @@ describe TypeCoerce do
         T.nilable(T::Array[T.nilable(T::Array[T.nilable(User)])])
       ].new.from([[{id: '1'}]]).flatten.map(&:id)).to eql([1])
     end
+
+    it 'works with nested T::Hash' do
+      expect(
+        TypeCoerce[T::Hash[Symbol, T::Hash[Symbol, Integer]]].new.from({
+          a: nil,
+          b: {c: '1'}
+        })
+      ).to eql({a: {}, b: {c: 1}})
+    end
   end
 end

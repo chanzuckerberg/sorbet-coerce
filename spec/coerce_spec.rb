@@ -31,6 +31,10 @@ describe TypeCoerce do
       const :myhash, T::Hash[String, Integer]
     end
 
+    class HashParamsWithDefault < T::Struct
+      const :myhash, T::Hash[String, Integer], default: Hash['a' => 1]
+    end
+
     class CustomType
       attr_reader :a
 
@@ -194,6 +198,8 @@ describe TypeCoerce do
 
   context 'when dealing with hashes' do
     it 'coreces correctly' do
+      expect(TypeCoerce[T::Hash[T.untyped, T.untyped]].new.from(nil)).to eql({})
+
       expect(TypeCoerce[T::Hash[String, T::Boolean]].new.from({
         a: 'true',
         b: 'false',
@@ -206,6 +212,7 @@ describe TypeCoerce do
         myhash: {'a' => '1', 'b' => '2'},
       }).myhash).to eql({'a' => 1, 'b' => 2})
 
+      expect(TypeCoerce[HashParamsWithDefault].new.from({}).myhash).to eql({'a' => 1})
 
       expect {
         TypeCoerce[T::Hash[String, T::Boolean]].new.from({

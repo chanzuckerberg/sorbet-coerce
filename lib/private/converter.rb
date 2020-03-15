@@ -59,6 +59,8 @@ module TypeCoerce::Private
           _convert(value, type.types[nil_idx == 0 ? 1 : 0], raise_coercion_error)
         end
       elsif type.is_a?(T::Types::TypedHash)
+        return {} if _nil_like?(value, type)
+
         unless value.respond_to?(:map)
           raise TypeCoerce::ShapeError.new(value, type)
         end
