@@ -74,7 +74,7 @@ module TypeCoerce::Private
       elsif Object.const_defined?('T::Private::Types::TypeAlias') &&
             type.is_a?(T::Private::Types::TypeAlias)
         _convert(value, type.aliased_type, raise_coercion_error)
-      elsif type < T::Struct
+      elsif type.respond_to?(:<) && type < T::Struct
         args = _build_args(value, type, raise_coercion_error)
         type.new(args)
       else
