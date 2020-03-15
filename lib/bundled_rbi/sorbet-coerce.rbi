@@ -15,13 +15,3 @@ module TypeCoerce
   class CoercionError < SafeType::CoercionError; end
   class ShapeError < SafeType::CoercionError; end
 end
-
-module T
-  module Private
-    module Types
-      class TypeAlias
-        def aliased_type; end
-      end
-    end
-  end
-end
