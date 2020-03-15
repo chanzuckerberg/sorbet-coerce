@@ -19,6 +19,7 @@ gem 'sorbet-coerce'
 ```sh
 ❯ bundle install
 ```
+3. Put [sorbet-coerce.rbi](lib/bundled_rbi/sorbet-coerce.rbi) in your project's sorbet directory: `sorbet/rbi/gems/`.
 
 ## Usage
 
