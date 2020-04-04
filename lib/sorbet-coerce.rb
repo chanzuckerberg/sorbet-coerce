@@ -1,5 +1,5 @@
 # typed: strict
-require_relative 'configuration'
+require 'public/configuration'
 require 'private/converter'
 require 'safe_type'
 
