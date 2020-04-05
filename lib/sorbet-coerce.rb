@@ -1,6 +1,6 @@
 # typed: strict
-require 'public/configuration'
-require 'private/converter'
+require 'sorbet-coerce/configuration'
+require 'sorbet-coerce/converter'
 require 'safe_type'
 
 module TypeCoerce
