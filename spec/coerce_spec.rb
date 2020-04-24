@@ -99,6 +99,7 @@ describe TypeCoerce do
       expect(param.info.name).to eql 'mango'
       expect(param.info.skill_ids).to eql [123, 456]
       expect(param.opt.notes).to eql []
+      expect(TypeCoerce[Param].new.from(param)).to eq(param)
 
       expect(param2.id).to eql 2
       expect(param2.info.name).to eql 'honeydew'
@@ -163,8 +164,10 @@ describe TypeCoerce do
 
   context 'when given custom types' do
     it 'coerces correctly' do
-      T.assert_type!(TypeCoerce[CustomType].new.from(a: 1), CustomType)
-      expect(TypeCoerce[CustomType].new.from(1).a).to be 1
+      obj = TypeCoerce[CustomType].new.from(1)
+      T.assert_type!(obj, CustomType)
+      expect(obj.a).to be 1
+      expect(TypeCoerce[CustomType].new.from(obj)).to be obj
 
       expect{TypeCoerce[UnsupportedCustomType].new.from(1)}.to raise_error(ArgumentError)
       # CustomType2.new(anything) returns Integer 1; 1.is_a?(CustomType2) == false
