@@ -75,9 +75,13 @@ module TypeCoerce::Private
             type.is_a?(T::Private::Types::TypeAlias)
         _convert(value, type.aliased_type, raise_coercion_error)
       elsif type.respond_to?(:<) && type < T::Struct
+        return value if value.is_a?(type)
+
         args = _build_args(value, type, raise_coercion_error)
         type.new(args)
       else
+        return value if value.is_a?(type)
+
         _convert_simple(value, type, raise_coercion_error)
       end
     end
