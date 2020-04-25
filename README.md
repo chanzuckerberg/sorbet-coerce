@@ -19,7 +19,6 @@ gem 'sorbet-coerce'
 ```sh
 ❯ bundle install
 ```
-3. Put [sorbet-coerce.rbi](lib/bundled_rbi/sorbet-coerce.rbi) in your project's sorbet directory: `sorbet/rbi/gems/`.
 
 ## Usage
 
@@ -112,7 +111,7 @@ end
 TypeCoerce[Params].new.from({id: '1'})
 # => <Params id=1, role="wizard">
 ```
-More examples: [nested params](https://github.com/chanzuckerberg/sorbet-coerce/blob/a56c0c6a363bb49b11e77ac57893afc3d54c6b8c/spec/nested_spec.rb#L18-L26)
+More examples: [nested params](https://github.com/chanzuckerberg/sorbet-coerce/blob/ffe1bed4de11ca832d9f76a157349ea03bbf29a1/spec/nested_spec.rb#L18-L26)
 
 ## Errors
 We will get `CoercionError`, `ShapeError`, or `TypeError` when the coercion doesn't work successfully.
