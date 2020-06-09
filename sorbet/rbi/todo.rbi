@@ -2,4 +2,7 @@
 #   srb rbi todo
 
 # typed: strong
-module SimpleCov::Formatter::Codecov; end
+module ::Anonymous_Delegator_4; end
+module T::CompatibilityPatches::RSpecCompatibility::MethodDoubleExtensions; end
+module T::CompatibilityPatches::RSpecCompatibility::RecorderExtensions; end
+module T::Private::Methods::SingletonMethodHooks; end
