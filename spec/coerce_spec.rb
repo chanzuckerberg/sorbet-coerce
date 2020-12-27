@@ -35,6 +35,17 @@ describe TypeCoerce do
       const :myhash, T::Hash[String, Integer], default: Hash['a' => 1]
     end
 
+    class TestEnum < T::Enum
+      enums do
+        Test = new
+        Other = new
+      end
+    end
+
+    class WithEnum < T::Struct
+      const :myenum, TestEnum
+    end
+
     class CustomType
       attr_reader :a
 
@@ -251,6 +262,18 @@ describe TypeCoerce do
 
     it 'coerces correctly' do
       expect(TypeCoerce[MyType].new.from('false')).to be false
+    end
+  end
+
+  context 'when dealing with enums' do
+    it 'coerces a serialized enum correctly' do
+      coerced = TypeCoerce[WithEnum].new.from(myenum: "test")
+      expect(coerced.myenum).to eq(TestEnum::Test)
+    end
+
+    it 'handles a real enum correctly' do
+      coerced = TypeCoerce[WithEnum].new.from(myenum: TestEnum::Test)
+      expect(coerced.myenum).to eq(TestEnum::Test)
     end
   end
 
