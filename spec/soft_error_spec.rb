@@ -4,6 +4,12 @@ require 'sorbet-runtime'
 
 describe TypeCoerce do
   context 'when type errors are soft errors' do
+    class SoftErrorTestEnum < T::Enum
+      enums do
+        Other = new
+      end
+    end
+
     let(:ignore_error) { Proc.new {} }
 
     before(:each) do
@@ -48,6 +54,7 @@ describe TypeCoerce do
 
     it 'works as expected' do
       expect(TypeCoerce[Integer].new.from(invalid_arg)).to eql(nil)
+      expect(TypeCoerce[SoftErrorTestEnum].new.from('bad_key')).to eql(nil)
 
       expect{TypeCoerce[T::Array[Integer]].new.from(1)}.to raise_error(TypeCoerce::ShapeError)
       expect(TypeCoerce[T::Array[Integer]].new.from({a: 1})).to eql([nil])
