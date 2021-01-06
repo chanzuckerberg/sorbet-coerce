@@ -34,6 +34,7 @@ T.reveal_type(converted) # <Type>
 - Custom Types: If the values can be coerced by `.new`
 - `T.untyped` (an escape hatch to ignore & return the given value)
 - `T::Boolean`
+- `T::Enum`
 - `T.nilable(<supported type>)`
 - `T::Array[<supported type>]`
 - `T::Hash[<supported type>, <supported type>]`
@@ -41,7 +42,6 @@ T.reveal_type(converted) # <Type>
 - Subclasses of `T::Struct`
 
 We don't support
-- `T::Enum` (currently)
 - Experimental features (tuples and shapes)
 - `T.any(<supported type>, ...)`: A union type other than `T.nilable`
 

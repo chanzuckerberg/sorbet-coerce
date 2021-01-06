@@ -275,6 +275,12 @@ describe TypeCoerce do
       coerced = TypeCoerce[WithEnum].new.from(myenum: TestEnum::Test)
       expect(coerced.myenum).to eq(TestEnum::Test)
     end
+
+    it 'handles bad enum' do
+      expect {
+        TypeCoerce[WithEnum].new.from(myenum: "bad_key")
+      }.to raise_error(TypeCoerce::CoercionError)
+    end
   end
 
   it 'works with T.untyped' do

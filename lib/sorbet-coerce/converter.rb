@@ -100,11 +100,25 @@ class TypeCoerce::Converter
 
       args = _build_args(value, type, raise_coercion_error)
       type.new(args)
+    elsif type.respond_to?(:<) && type < T::Enum
+      return value if value.is_a?(type)
+
+      _convert_enum(value, type, raise_coercion_error)
     else
       return value if value.is_a?(type)
 
       _convert_simple(value, type, raise_coercion_error)
     end
+  end
+
+  def _convert_enum(value, type, raise_coercion_error)
+    if raise_coercion_error
+      type.deserialize(value)
+    else
+      type.try_deserialize(value)
+    end
+  rescue KeyError
+    raise TypeCoerce::CoercionError.new(value, type)
   end
 
   def _convert_simple(value, type, raise_coercion_error)
@@ -118,8 +132,6 @@ class TypeCoerce::Converter
       return value
     elsif PRIMITIVE_TYPES.include?(type)
       safe_type_rule = SafeType.const_get(type.name).strict
-    elsif type < T::Enum
-      return type.deserialize(value)
     else
       safe_type_rule = type
     end
