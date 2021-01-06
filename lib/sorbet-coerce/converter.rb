@@ -118,6 +118,8 @@ class TypeCoerce::Converter
       return value
     elsif PRIMITIVE_TYPES.include?(type)
       safe_type_rule = SafeType.const_get(type.name).strict
+    elsif type < T::Enum
+      return type.deserialize(value)
     else
       safe_type_rule = type
     end
