@@ -130,6 +130,8 @@ class TypeCoerce::Converter
       safe_type_rule = SafeType::Boolean.strict
     elsif value.is_a?(type)
       return value
+    elsif type == BigDecimal
+      return BigDecimal(value)
     elsif PRIMITIVE_TYPES.include?(type)
       safe_type_rule = SafeType.const_get(type.name).strict
     else
