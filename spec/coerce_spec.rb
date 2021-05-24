@@ -19,6 +19,7 @@ describe TypeCoerce do
     class Param < T::Struct
       const :id, Integer
       const :role, String, default: 'wizard'
+      const :price, BigDecimal
       const :info, ParamInfo
       const :opt, T.nilable(ParamInfo2)
     end
@@ -65,6 +66,7 @@ describe TypeCoerce do
     let!(:param) {
       TypeCoerce[Param].new.from({
         id: 1,
+        price: BigDecimal('98.76'),
         info: {
           name: 'mango',
           lvl: 100,
@@ -81,6 +83,7 @@ describe TypeCoerce do
     let!(:param2) {
       TypeCoerce[Param].new.from({
         id: '2',
+        price: '98.76',
         info: {
           name: 'honeydew',
           lvl: '5',
@@ -97,6 +100,7 @@ describe TypeCoerce do
     it 'reveals the right type' do
       T.assert_type!(param, Param)
       T.assert_type!(param.id, Integer)
+      T.assert_type!(param.price, BigDecimal)
       T.assert_type!(param.info, ParamInfo)
       T.assert_type!(param.info.name,String)
       T.assert_type!(param.info.lvl, Integer)
@@ -106,6 +110,7 @@ describe TypeCoerce do
     it 'coerces correctly' do
       expect(param.id).to eql 1
       expect(param.role).to eql 'wizard'
+      expect(param.price).to eql BigDecimal('98.76')
       expect(param.info.lvl).to eql 100
       expect(param.info.name).to eql 'mango'
       expect(param.info.skill_ids).to eql [123, 456]
@@ -113,6 +118,7 @@ describe TypeCoerce do
       expect(TypeCoerce[Param].new.from(param)).to eq(param)
 
       expect(param2.id).to eql 2
+      expect(param2.price).to eql BigDecimal('98.76')
       expect(param2.info.name).to eql 'honeydew'
       expect(param2.info.lvl).to eql 5
       expect(param2.info.skill_ids).to eql []
