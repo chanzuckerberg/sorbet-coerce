@@ -39,11 +39,11 @@ T.reveal_type(converted) # <Type>
 - `T::Array[<supported type>]`
 - `T::Hash[<supported type>, <supported type>]`
 - `T::Set[<supported type>]`
+- `T.any(<supported type>, ...)`
 - Subclasses of `T::Struct`
 
 We don't support
 - Experimental features (tuples and shapes)
-- `T.any(<supported type>, ...)`: A union type other than `T.nilable`
 
 ### Examples
 - Simple Types
