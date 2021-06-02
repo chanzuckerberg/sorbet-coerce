@@ -63,6 +63,15 @@ describe TypeCoerce do
       # Does not respond to new
     end
 
+    class WithSupportedUnion < T::Struct
+      const :nilable, T.nilable(String)
+      const :nilable_boolean, T.nilable(T::Boolean)
+    end
+
+    class WithUnsupportedUnion < T::Struct
+      const :union, T.any(String, Integer)
+    end
+
     let!(:param) {
       TypeCoerce[Param].new.from({
         id: 1,
@@ -144,12 +153,12 @@ describe TypeCoerce do
   context 'when the given T::Struct is invalid' do
     class Param2 < T::Struct
       const :id, Integer
-      const :info, T.any(Integer, String)
+      const :param, Param
     end
 
     it 'raises an error' do
       expect {
-        TypeCoerce[Param2].new.from({id: 1, info: 1})
+        TypeCoerce[Param2].new.from({id: 1, info: {}})
       }.to raise_error(ArgumentError)
     end
   end
@@ -189,6 +198,33 @@ describe TypeCoerce do
       expect{TypeCoerce[UnsupportedCustomType].new.from(1)}.to raise_error(ArgumentError)
       # CustomType2.new(anything) returns Integer 1; 1.is_a?(CustomType2) == false
       expect{TypeCoerce[CustomType2].new.from(1)}.to raise_error(TypeError)
+    end
+  end
+
+  context 'when given union types' do
+    context 'supported union types' do
+      it 'coerces correctly' do
+        coerced = TypeCoerce[WithSupportedUnion].new.from(
+          nilable: 2,
+          nilable_boolean: 'true'
+        )
+        expect(coerced.nilable).to eq('2')
+        expect(coerced.nilable_boolean).to eq(true)
+      end
+    end
+
+    context 'unsupported union types' do
+      it 'keeps the values as-is' do
+        coerced = TypeCoerce[WithUnsupportedUnion].new.from(union: 'a')
+        expect(coerced.union).to eq('a')
+
+        coerced = TypeCoerce[WithUnsupportedUnion].new.from(union: 2)
+        expect(coerced.union).to eq(2)
+
+        expect do
+          TypeCoerce[WithUnsupportedUnion].new.from(union: nil)
+        end.to raise_error(TypeError)
+      end
     end
   end
 

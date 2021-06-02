@@ -65,9 +65,7 @@ class TypeCoerce::Converter
         false_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == FalseClass
       end
 
-      raise ArgumentError.new(
-        'the only supported union types are T.nilable and T::Boolean',
-      ) unless (
+      return value unless (
         (!true_idx.nil? && !false_idx.nil? && !nil_idx.nil?) || # T.nilable(T::Boolean)
         (type.types.length == 2 && (
           !nil_idx.nil? || (!true_idx.nil? && !false_idx.nil?) # T.nilable || T::Boolean
