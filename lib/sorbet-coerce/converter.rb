@@ -93,7 +93,7 @@ class TypeCoerce::Converter
     elsif Object.const_defined?('T::Private::Types::TypeAlias') &&
           type.is_a?(T::Private::Types::TypeAlias)
       _convert(value, type.aliased_type, raise_coercion_error)
-    elsif type.respond_to?(:<) && type < T::Struct
+    elsif type.respond_to?(:<) && type < T::InexactStruct
       return value if value.is_a?(type)
 
       args = _build_args(value, type, raise_coercion_error)
