@@ -72,6 +72,9 @@ describe TypeCoerce do
       const :union, T.any(String, Integer)
     end
 
+    class CustomString < String
+    end
+
     let!(:param) {
       TypeCoerce[Param].new.from({
         id: 1,
@@ -330,5 +333,19 @@ describe TypeCoerce do
 
     obj = CustomType.new(1)
     expect(TypeCoerce[T::Hash[String, T.untyped]].new.from({a: obj})).to eq({'a' => obj})
+  end
+
+  context 'when dealing with T.class_of' do
+    it 'keeps the value as-is' do
+      string_class_type = T.class_of(String)
+      expect(TypeCoerce[string_class_type].new.from(String)).to eql(String)
+      expect(TypeCoerce[string_class_type].new.from(CustomString)).to eql(CustomString)
+      expect do
+        TypeCoerce[string_class_type].new.from(Integer)
+      end.to raise_error(TypeError)
+      expect do
+        TypeCoerce[string_class_type].new.from('a')
+      end.to raise_error(TypeError)
+    end
   end
 end

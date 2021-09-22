@@ -48,6 +48,8 @@ class TypeCoerce::Converter
   def _convert(value, type, raise_coercion_error)
     if type.is_a?(T::Types::Untyped)
       value
+    elsif type.is_a?(T::Types::ClassOf)
+      value
     elsif type.is_a?(T::Types::TypedArray)
       _convert_to_a(value, type.type, raise_coercion_error)
     elsif type.is_a?(T::Types::TypedSet)
