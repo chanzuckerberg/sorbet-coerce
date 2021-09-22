@@ -348,4 +348,21 @@ describe TypeCoerce do
       end.to raise_error(TypeError)
     end
   end
+
+  context 'when dealing with unknown types' do
+    context 'raise_coercion_error is enabled' do
+      it 'raises error' do
+        expect do
+          TypeCoerce['a'].new.from('a', raise_coercion_error: true)
+        end.to raise_error(TypeCoerce::CoercionError)
+      end
+    end
+    context 'raise_coercion_error is disabled' do
+      it 'keeps the value as-is (and let Sorbet raise error)' do
+        expect do
+          TypeCoerce['a'].new.from('a', raise_coercion_error: false)
+        end.to raise_error(/must be an T::Types::Base/i)
+      end
+    end
+  end
 end
