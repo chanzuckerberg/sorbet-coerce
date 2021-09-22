@@ -50,6 +50,8 @@ class TypeCoerce::Converter
       value
     elsif type.is_a?(T::Types::TypedArray)
       _convert_to_a(value, type.type, raise_coercion_error)
+    elsif type.is_a?(T::Types::FixedArray)
+      _convert_to_a(value, type.types, raise_coercion_error)
     elsif type.is_a?(T::Types::TypedSet)
       Set.new(_convert_to_a(value, type.type, raise_coercion_error))
     elsif type.is_a?(T::Types::Simple)
@@ -156,7 +158,13 @@ class TypeCoerce::Converter
       raise TypeCoerce::ShapeError.new(ary, type)
     end
 
-    ary.map { |value| _convert(value, type, raise_coercion_error) }
+    ary.map.with_index do |value, i|
+      if type.is_a?(Array)
+        _convert(value, type[i], raise_coercion_error)
+      else
+        _convert(value, type, raise_coercion_error)
+      end
+    end
   end
 
   def _build_args(args, type, raise_coercion_error)
