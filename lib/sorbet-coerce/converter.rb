@@ -48,6 +48,8 @@ class TypeCoerce::Converter
   def _convert(value, type, raise_coercion_error)
     if type.is_a?(T::Types::Untyped)
       value
+    elsif type.is_a?(T::Types::ClassOf)
+      value
     elsif type.is_a?(T::Types::TypedArray)
       _convert_to_a(value, type.type, raise_coercion_error)
     elsif type.is_a?(T::Types::TypedSet)
@@ -93,19 +95,23 @@ class TypeCoerce::Converter
     elsif Object.const_defined?('T::Private::Types::TypeAlias') &&
           type.is_a?(T::Private::Types::TypeAlias)
       _convert(value, type.aliased_type, raise_coercion_error)
-    elsif type.respond_to?(:<) && type < T::Struct
+    elsif type.is_a?(Class) || type.is_a?(Module)
       return value if value.is_a?(type)
 
-      args = _build_args(value, type, raise_coercion_error)
-      type.new(args)
-    elsif type.respond_to?(:<) && type < T::Enum
-      return value if value.is_a?(type)
-
-      _convert_enum(value, type, raise_coercion_error)
+      if type < T::Struct
+        args = _build_args(value, type, raise_coercion_error)
+        type.new(args)
+      elsif type < T::Enum
+        _convert_enum(value, type, raise_coercion_error)
+      else
+        _convert_simple(value, type, raise_coercion_error)
+      end
     else
-      return value if value.is_a?(type)
-
-      _convert_simple(value, type, raise_coercion_error)
+      if raise_coercion_error
+        raise TypeCoerce::CoercionError.new(value, type)
+      else
+        value
+      end
     end
   end
 
