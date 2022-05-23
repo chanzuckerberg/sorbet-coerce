@@ -72,6 +72,10 @@ describe TypeCoerce do
       const :union, T.any(String, Integer)
     end
 
+    class WithFixedArray < T::Struct
+      const :arr, [Integer, String, Integer]
+    end
+
     class CustomString < String
     end
 
@@ -333,6 +337,15 @@ describe TypeCoerce do
 
     obj = CustomType.new(1)
     expect(TypeCoerce[T::Hash[String, T.untyped]].new.from({a: obj})).to eq({'a' => obj})
+  end
+
+  it 'works with T::Types::FixedArray' do
+    type = T.type_alias { [Integer, String, Integer] }
+    coerced = TypeCoerce[type].new.from(['1', 2, '3'])
+    expect(coerced).to eql([1, '2', 3])
+
+    coerced = TypeCoerce[WithFixedArray].new.from({ arr: ['1', 2, '3'] })
+    expect(coerced.arr).to eql([1, '2', 3])
   end
 
   context 'when dealing with T.class_of' do
