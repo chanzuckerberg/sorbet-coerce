@@ -3,9 +3,10 @@ source 'https://rubygems.org'
 gemspec
 
 group :test do
-  gem 'codecov', require: false
   gem 'rake', require: false
   gem 'simplecov', require: false
+  #Simplecov-cobertura to generate an xml coverage file which can then be uploaded to Codecov
+  gem 'simplecov-cobertura'
 end
 
 sorbet_version = ENV["SORBET_VERSION"]
