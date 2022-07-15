@@ -1,6 +1,6 @@
 # sorbet-coerce
 [![Gem Version](https://badge.fury.io/rb/sorbet-coerce.svg)](https://badge.fury.io/rb/sorbet-coerce)
-[![Build Status](https://travis-ci.com/chanzuckerberg/sorbet-coerce.svg?branch=master)](https://travis-ci.com/chanzuckerberg/sorbet-coerce)
+[![GitHub Action: CI](https://github.com/chanzuckerberg/sorbet-coerce/actions/workflows/ci.yml/badge.svg)](https://github.com/chanzuckerberg/sorbet-coerce/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/chanzuckerberg/sorbet-coerce/branch/master/graph/badge.svg)](https://codecov.io/gh/chanzuckerberg/sorbet-coerce)
 
 A type coercion lib works with [Sorbet](https://sorbet.org)'s static type checker and type definitions; raises an error if the coercion fails.
