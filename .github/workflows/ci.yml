@@ -25,6 +25,6 @@ jobs:
     - run: bundle exec rspec
     - run: bundle exec ruby spec/sorbet_test_cases.rb
     - name: Upload to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: coverage/coverage.xml
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage/coverage.xml

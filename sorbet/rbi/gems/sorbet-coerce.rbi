@@ -5,11 +5,10 @@
 #
 # If you would like to make changes to this file, great! Please create the gem's shim here:
 #
-#   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec/all/rspec.rbi
+#   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/sorbet-coerce/all/sorbet-coerce.rbi
 #
-# rspec-3.11.0
+# sorbet-coerce-0.5.0
 
-module RSpec
-end
-module RSpec::Version
+module TypeCoerce
+  def self.[](type); end
 end
