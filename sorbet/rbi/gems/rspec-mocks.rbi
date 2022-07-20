@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-mocks/all/rspec-mocks.rbi
 #
-# rspec-mocks-3.9.1
+# rspec-mocks-3.11.1
 
 module RSpec
 end
@@ -200,6 +200,7 @@ class RSpec::Mocks::Proxy
   def as_null_object; end
   def build_expectation(method_name); end
   def check_for_unexpected_arguments(expectation); end
+  def ensure_can_be_proxied!(object); end
   def ensure_implemented(*_args); end
   def find_almost_matching_expectation(method_name, *args); end
   def find_almost_matching_stub(method_name, *args); end
@@ -304,7 +305,7 @@ module RSpec::Mocks::TestDoubleFormatter
   def self.verified_module_desc(dbl); end
 end
 class RSpec::Mocks::ArgumentListMatcher
-  def args_match?(*args); end
+  def args_match?(*actual_args); end
   def ensure_expected_args_valid!; end
   def expected_args; end
   def initialize(*expected_args); end
@@ -321,6 +322,7 @@ class RSpec::Mocks::SimpleMessageExpectation
 end
 class RSpec::Mocks::MessageExpectation
   def and_call_original; end
+  def and_invoke(first_proc, *procs); end
   def and_raise(*args); end
   def and_return(first_value, *values); end
   def and_throw(*args); end
@@ -401,6 +403,10 @@ end
 class RSpec::Mocks::AndReturnImplementation
   def call(*_args_to_ignore, &_block); end
   def initialize(values_to_return); end
+end
+class RSpec::Mocks::AndInvokeImplementation
+  def call(*args, &block); end
+  def initialize(procs_to_invoke); end
 end
 class RSpec::Mocks::Implementation
   def actions; end
@@ -793,10 +799,6 @@ module RSpec::Mocks::VerifyingDouble
   def respond_to?(message, include_private = nil); end
   def send(name, *args, &block); end
 end
-module RSpec::Mocks::VerifyingDouble::SilentIO
-  def self.method_missing(*arg0); end
-  def self.respond_to?(*arg0); end
-end
 class RSpec::Mocks::InstanceVerifyingDouble
   def __build_mock_proxy(order_group); end
   include RSpec::Mocks::TestDouble
@@ -1020,6 +1022,7 @@ class RSpec::Mocks::Matchers::ExpectationCustomization
 end
 class RSpec::Mocks::Matchers::Receive
   def and_call_original(*args, &block); end
+  def and_invoke(*args, &block); end
   def and_raise(*args, &block); end
   def and_return(*args, &block); end
   def and_throw(*args, &block); end
@@ -1061,6 +1064,7 @@ class RSpec::Mocks::Matchers::Receive::DefaultDescribable
 end
 class RSpec::Mocks::Matchers::ReceiveMessageChain
   def and_call_original(*args, &block); end
+  def and_invoke(*args, &block); end
   def and_raise(*args, &block); end
   def and_return(*args, &block); end
   def and_throw(*args, &block); end
