@@ -44,6 +44,29 @@ class Binding
   def irb(); end
 end
 
+class Bundler::APIResponseInvalidDependenciesError
+  def status_code(); end
+end
+
+class Bundler::APIResponseInvalidDependenciesError
+end
+
+class Bundler::Definition
+  def dependencies_for(groups); end
+
+  def most_specific_locked_platform(); end
+
+  def requested_dependencies(); end
+end
+
+class Bundler::DepProxy
+  def clone(); end
+end
+
+class Bundler::DepProxy
+  def self.get_proxy(dep, platform); end
+end
+
 class Bundler::Dependency
   def branch(); end
 
@@ -63,6 +86,16 @@ class Bundler::Env
   def self.report(options=T.unsafe(nil)); end
 
   def self.write(io); end
+end
+
+class Bundler::EnvironmentPreserver
+  def replace_with_backup(); end
+end
+
+class Bundler::EnvironmentPreserver
+  def self.env_to_hash(env); end
+
+  def self.from_env(); end
 end
 
 class Bundler::Fetcher
@@ -250,6 +283,10 @@ class Bundler::GemHelper
 
   def committed?(); end
 
+  def current_branch(); end
+
+  def default_remote(); end
+
   def gem_command(); end
 
   def gem_key(); end
@@ -284,6 +321,8 @@ class Bundler::GemHelper
 
   def spec_path(); end
 
+  def tag_prefix=(tag_prefix); end
+
   def tag_version(); end
 
   def version(); end
@@ -299,6 +338,20 @@ class Bundler::GemHelper
   def self.instance(); end
 
   def self.instance=(instance); end
+
+  def self.tag_prefix=(prefix); end
+end
+
+class Bundler::GemHelpers::PlatformMatch
+  def self.specificity_score(spec_platform, user_platform); end
+end
+
+module Bundler::GemHelpers
+  def self.local_platform(); end
+
+  def self.same_deps(spec, exemplary_spec); end
+
+  def self.same_specificity(platform, spec, exemplary_spec); end
 end
 
 class Bundler::GemVersionPromoter
@@ -383,18 +436,14 @@ class Bundler::Injector
   def self.remove(gems, options=T.unsafe(nil)); end
 end
 
-class Bundler::Molinillo::DependencyGraph
-  include ::Enumerable
+class Bundler::LazySpecification
+  def eql?(other); end
+
+  def platform_string(); end
 end
 
-class Bundler::Molinillo::DependencyGraph::Log
-  extend ::Enumerable
-end
-
-class Bundler::Molinillo::DependencyGraph::Vertex
-  def _recursive_predecessors(vertices=T.unsafe(nil)); end
-
-  def _recursive_successors(vertices=T.unsafe(nil)); end
+module Bundler::Molinillo::SpecificationProvider
+  def dependencies_equal?(dependencies, other_dependencies); end
 end
 
 module Bundler::Plugin::API::Source
@@ -477,6 +526,8 @@ class Bundler::Plugin::Index
   def installed_plugins(); end
 
   def plugin_commands(plugin); end
+
+  def unregister_plugin(name); end
 end
 
 class Bundler::Plugin::Index::CommandConflict
@@ -523,6 +574,8 @@ end
 
 module Bundler::Plugin
   def self.list(); end
+
+  def self.uninstall(names, options); end
 end
 
 class Bundler::ProcessLock
@@ -530,6 +583,26 @@ end
 
 class Bundler::ProcessLock
   def self.lock(bundle_path=T.unsafe(nil)); end
+end
+
+class Bundler::Resolver
+  include ::Bundler::GemHelpers
+end
+
+class Bundler::Resolver::SpecGroup
+  def activate_all_platforms!(); end
+
+  def activated_platforms(); end
+
+  def activated_platforms=(activated_platforms); end
+
+  def partitioned_dependency_names_for_activated_platforms(); end
+
+  def sorted_activated_platforms(); end
+end
+
+class Bundler::Resolver::SpecGroup
+  def self.create_for(specs, all_platforms, specific_platform); end
 end
 
 class Bundler::Retry
@@ -560,13 +633,9 @@ class Bundler::Retry
   def self.default_retries(); end
 end
 
-class Bundler::RubyGemsGemInstaller
-end
-
-class Bundler::RubyGemsGemInstaller
-end
-
 class Bundler::RubygemsIntegration
+  def add_default_gems_to(specs); end
+
   def add_to_load_path(paths); end
 
   def all_specs(); end
@@ -580,6 +649,8 @@ class Bundler::RubygemsIntegration
   def find_name(name); end
 
   def gem_remote_fetcher(); end
+
+  def load_env_plugins(); end
 
   def plain_specs(); end
 
@@ -651,10 +722,18 @@ end
 
 class Bundler::Source::Git
   def glob(); end
+
+  def local?(); end
 end
 
 class Bundler::SpecSet
   include ::Enumerable
+end
+
+class Bundler::StubSpecification
+  def extensions(); end
+
+  def gem_build_complete_path(); end
 end
 
 class Bundler::Thor
@@ -1533,6 +1612,8 @@ end
 class Bundler::Thor::Shell::Color
   def are_colors_disabled?(); end
 
+  def are_colors_supported?(); end
+
   def diff_lcs_loaded?(); end
 
   def output_diff_line(diff); end
@@ -1780,7 +1861,7 @@ class Bundler::UI::Shell
 
   def debug?(); end
 
-  def error(msg, newline=T.unsafe(nil)); end
+  def error(msg, newline=T.unsafe(nil), color=T.unsafe(nil)); end
 
   def info(msg, newline=T.unsafe(nil)); end
 
@@ -1802,7 +1883,7 @@ class Bundler::UI::Shell
 
   def unprinted_warnings(); end
 
-  def warn(msg, newline=T.unsafe(nil)); end
+  def warn(msg, newline=T.unsafe(nil), color=T.unsafe(nil)); end
 
   def yes?(msg); end
   LEVELS = ::T.let(nil, ::T.untyped)
@@ -2319,9 +2400,15 @@ module Bundler::VersionRanges
 end
 
 module Bundler
+  def self.most_specific_locked_platform?(platform); end
+
   def self.original_exec(*args); end
 
   def self.original_system(*args); end
+
+  def self.preferred_gemfile_name(); end
+
+  def self.reset_settings_and_root!(); end
 
   def self.unbundled_env(); end
 
@@ -2905,23 +2992,11 @@ class Enumerator::Generator
   def initialize(*arg); end
 end
 
-class Enumerator::Lazy
-  def eager(); end
-end
-
 class Enumerator::Producer
   def each(&blk); end
 end
 
 class Enumerator::Producer
-end
-
-class Enumerator::Yielder
-  def to_proc(); end
-end
-
-class Enumerator
-  def self.produce(*arg); end
 end
 
 Errno::EAUTH = Errno::NOERROR
@@ -3131,10 +3206,6 @@ module Forwardable
   def self.debug=(debug); end
 end
 
-class FrozenError
-  def receiver(); end
-end
-
 module GC
   def garbage_collect(full_mark: T.unsafe(nil), immediate_mark: T.unsafe(nil), immediate_sweep: T.unsafe(nil)); end
 end
@@ -3169,6 +3240,35 @@ class Gem::Ext::ExtConfBuilder
   def self.build(extension, dest_path, results, args=T.unsafe(nil), lib_dir=T.unsafe(nil)); end
 
   def self.get_relative_path(path); end
+end
+
+Gem::Installer::ExtensionBuildError = Gem::Ext::BuildError
+
+class Gem::Installer::FakePackage
+  def copy_to(path); end
+
+  def data_mode(); end
+
+  def data_mode=(data_mode); end
+
+  def dir_mode(); end
+
+  def dir_mode=(dir_mode); end
+
+  def extract_files(destination_dir, pattern=T.unsafe(nil)); end
+
+  def initialize(spec); end
+
+  def prog_mode(); end
+
+  def prog_mode=(prog_mode); end
+
+  def spec(); end
+
+  def spec=(spec); end
+end
+
+class Gem::Installer::FakePackage
 end
 
 class Gem::Package
@@ -3383,6 +3483,29 @@ class Gem::Request
   extend ::Gem::UserInteraction
   extend ::Gem::DefaultUserInteraction
   extend ::Gem::Text
+end
+
+class Gem::Requirement
+  include ::Gem::Requirement::OrderIndependentComparison
+  include ::Gem::Requirement::CorrectHashForLambdaOperator
+end
+
+module Gem::Requirement::CorrectHashForLambdaOperator
+  def hash(); end
+end
+
+module Gem::Requirement::CorrectHashForLambdaOperator
+end
+
+module Gem::Requirement::OrderIndependentComparison
+  def ==(other); end
+
+  def _requirements_sorted?(); end
+
+  def _with_sorted_requirements(); end
+end
+
+module Gem::Requirement::OrderIndependentComparison
 end
 
 class Gem::Resolver::CurrentSet
@@ -3795,8 +3918,6 @@ class IO
   def scroll_backward(arg); end
 
   def scroll_forward(arg); end
-
-  def set_encoding_by_bom(); end
 
   def wait(*arg); end
 
