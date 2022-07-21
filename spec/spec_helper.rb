@@ -1,13 +1,10 @@
 # typed: strict
-require 'byebug'
-require 'simplecov'
+require "byebug"
+require "simplecov"
+require "simplecov-cobertura"
 
 SimpleCov.start
-
-if ENV['CI'] == 'true'
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
+SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 
 RSpec.configure do |config|
   config.expect_with(:rspec) { |c| c.syntax = :expect }
