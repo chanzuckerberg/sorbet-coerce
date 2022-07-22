@@ -219,10 +219,10 @@ describe TypeCoerce do
   context 'when given union types' do
     context 'supported union types' do
       it 'coerces correctly' do
-        coerced = TypeCoerce[WithSupportedUnion].new.from(
+        coerced = TypeCoerce[WithSupportedUnion].new.from({
           nilable: 2,
           nilable_boolean: 'true'
-        )
+        })
         expect(coerced.nilable).to eq('2')
         expect(coerced.nilable_boolean).to eq(true)
       end
@@ -230,14 +230,14 @@ describe TypeCoerce do
 
     context 'unsupported union types' do
       it 'keeps the values as-is' do
-        coerced = TypeCoerce[WithUnsupportedUnion].new.from(union: 'a')
+        coerced = TypeCoerce[WithUnsupportedUnion].new.from({union: 'a'})
         expect(coerced.union).to eq('a')
 
-        coerced = TypeCoerce[WithUnsupportedUnion].new.from(union: 2)
+        coerced = TypeCoerce[WithUnsupportedUnion].new.from({union: 2})
         expect(coerced.union).to eq(2)
 
         expect do
-          TypeCoerce[WithUnsupportedUnion].new.from(union: nil)
+          TypeCoerce[WithUnsupportedUnion].new.from({union: nil})
         end.to raise_error(TypeError)
       end
     end
@@ -324,18 +324,18 @@ describe TypeCoerce do
 
   context 'when dealing with enums' do
     it 'coerces a serialized enum correctly' do
-      coerced = TypeCoerce[WithEnum].new.from(myenum: "test")
+      coerced = TypeCoerce[WithEnum].new.from({myenum: "test"})
       expect(coerced.myenum).to eq(TestEnum::Test)
     end
 
     it 'handles a real enum correctly' do
-      coerced = TypeCoerce[WithEnum].new.from(myenum: TestEnum::Test)
+      coerced = TypeCoerce[WithEnum].new.from({myenum: TestEnum::Test})
       expect(coerced.myenum).to eq(TestEnum::Test)
     end
 
     it 'handles bad enum' do
       expect {
-        TypeCoerce[WithEnum].new.from(myenum: "bad_key")
+        TypeCoerce[WithEnum].new.from({myenum: "bad_key"})
       }.to raise_error(TypeCoerce::CoercionError)
     end
   end
