@@ -3,6 +3,7 @@ name: Create and publish sorbet-coerce
 # see: https://github.com/chanzuckerberg/redcord/blob/master/.github/workflows/publish.yml
 
 on:
+  workflow_dispatch:
   release:
     types: [published]
 jobs:
