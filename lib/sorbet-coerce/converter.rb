@@ -25,12 +25,12 @@ class TypeCoerce::Converter
     "#{name}#[#{@type.to_s}]"
   end
 
-  def from(args, raise_coercion_error: nil)
+  def from(args, raise_coercion_error: nil, coerce_empty_to_nil: false)
     if raise_coercion_error.nil?
       raise_coercion_error = TypeCoerce::Configuration.raise_coercion_error
     end
 
-    T.let(_convert(args, @type, raise_coercion_error), @type)
+    T.let(_convert(args, @type, raise_coercion_error, coerce_empty_to_nil), @type)
   end
 
   private
@@ -45,19 +45,19 @@ class TypeCoerce::Converter
     Time,
   ], T.untyped)
 
-  def _convert(value, type, raise_coercion_error)
+  def _convert(value, type, raise_coercion_error, coerce_empty_to_nil)
     if type.is_a?(T::Types::Untyped)
       value
     elsif type.is_a?(T::Types::ClassOf)
       value
     elsif type.is_a?(T::Types::TypedArray)
-      _convert_to_a(value, type.type, raise_coercion_error)
+      _convert_to_a(value, type.type, raise_coercion_error, coerce_empty_to_nil)
     elsif type.is_a?(T::Types::FixedArray)
-      _convert_to_a(value, type.types, raise_coercion_error)
+      _convert_to_a(value, type.types, raise_coercion_error, coerce_empty_to_nil)
     elsif type.is_a?(T::Types::TypedSet)
-      Set.new(_convert_to_a(value, type.type, raise_coercion_error))
+      Set.new(_convert_to_a(value, type.type, raise_coercion_error, coerce_empty_to_nil))
     elsif type.is_a?(T::Types::Simple)
-      _convert(value, type.raw_type, raise_coercion_error)
+      _convert(value, type.raw_type, raise_coercion_error, coerce_empty_to_nil)
     elsif type.is_a?(T::Types::Union)
       true_idx = T.let(nil, T.nilable(Integer))
       false_idx = T.let(nil, T.nilable(Integer))
@@ -77,12 +77,12 @@ class TypeCoerce::Converter
       )
 
       if !true_idx.nil? && !false_idx.nil?
-        _convert_simple(value, T::Boolean, raise_coercion_error)
+        _convert_simple(value, T::Boolean, raise_coercion_error, coerce_empty_to_nil)
       else
-        _convert(value, type.types[nil_idx == 0 ? 1 : 0], raise_coercion_error)
+        _convert(value, type.types[nil_idx == 0 ? 1 : 0], raise_coercion_error, coerce_empty_to_nil)
       end
     elsif type.is_a?(T::Types::TypedHash)
-      return {} if _nil_like?(value, type)
+      return {} if _nil_like?(value, type, coerce_empty_to_nil)
 
       unless value.respond_to?(:map)
         raise TypeCoerce::ShapeError.new(value, type)
@@ -90,23 +90,23 @@ class TypeCoerce::Converter
 
       value.map do |k, v|
         [
-          _convert(k, type.keys, raise_coercion_error),
-          _convert(v, type.values, raise_coercion_error),
+          _convert(k, type.keys, raise_coercion_error, coerce_empty_to_nil),
+          _convert(v, type.values, raise_coercion_error, coerce_empty_to_nil),
         ]
       end.to_h
     elsif Object.const_defined?('T::Private::Types::TypeAlias') &&
           type.is_a?(T::Private::Types::TypeAlias)
-      _convert(value, type.aliased_type, raise_coercion_error)
+      _convert(value, type.aliased_type, raise_coercion_error, coerce_empty_to_nil)
     elsif type.is_a?(Class) || type.is_a?(Module)
-      return value if value.is_a?(type)
+      return coerce_nil(value, type, coerce_empty_to_nil) if value.is_a?(type)
 
       if type < T::Struct
-        args = _build_args(value, type, raise_coercion_error)
+        args = _build_args(value, type, raise_coercion_error, coerce_empty_to_nil)
         type.new(args)
       elsif type < T::Enum
-        _convert_enum(value, type, raise_coercion_error)
+        _convert_enum(value, type, raise_coercion_error, coerce_empty_to_nil)
       else
-        _convert_simple(value, type, raise_coercion_error)
+        _convert_simple(value, type, raise_coercion_error, coerce_empty_to_nil)
       end
     else
       if raise_coercion_error
@@ -117,7 +117,7 @@ class TypeCoerce::Converter
     end
   end
 
-  def _convert_enum(value, type, raise_coercion_error)
+  def _convert_enum(value, type, raise_coercion_error, coerce_empty_to_nil)
     if raise_coercion_error
       type.deserialize(value)
     else
@@ -127,8 +127,8 @@ class TypeCoerce::Converter
     raise TypeCoerce::CoercionError.new(value, type)
   end
 
-  def _convert_simple(value, type, raise_coercion_error)
-    return nil if _nil_like?(value, type)
+  def _convert_simple(value, type, raise_coercion_error, coerce_empty_to_nil)
+    return nil if _nil_like?(value, type, coerce_empty_to_nil)
 
     safe_type_rule = T.let(nil, T.untyped)
 
@@ -157,8 +157,8 @@ class TypeCoerce::Converter
     end
   end
 
-  def _convert_to_a(ary, type, raise_coercion_error)
-    return [] if _nil_like?(ary, type)
+  def _convert_to_a(ary, type, raise_coercion_error, coerce_empty_to_nil)
+    return [] if _nil_like?(ary, type, coerce_empty_to_nil)
 
     unless ary.respond_to?(:map)
       raise TypeCoerce::ShapeError.new(ary, type)
@@ -166,15 +166,15 @@ class TypeCoerce::Converter
 
     ary.map.with_index do |value, i|
       if type.is_a?(Array)
-        _convert(value, type[i], raise_coercion_error)
+        _convert(value, type[i], raise_coercion_error, coerce_empty_to_nil)
       else
-        _convert(value, type, raise_coercion_error)
+        _convert(value, type, raise_coercion_error, coerce_empty_to_nil)
       end
     end
   end
 
-  def _build_args(args, type, raise_coercion_error)
-    return {} if _nil_like?(args, Hash)
+  def _build_args(args, type, raise_coercion_error, coerce_empty_to_nil)
+    return {} if _nil_like?(args, Hash, coerce_empty_to_nil)
 
     unless args.respond_to?(:each_pair)
       raise TypeCoerce::ShapeError.new(args, type)
@@ -186,12 +186,22 @@ class TypeCoerce::Converter
       [
         key,
         (!props.include?(key) || value.nil?) ?
-          nil : _convert(value, props[key][:type], raise_coercion_error),
+          nil : _convert(value, props[key][:type], raise_coercion_error, coerce_empty_to_nil),
       ]
     }.to_h.slice(*props.keys)
   end
 
-  def _nil_like?(value, type)
-    value.nil? || (value == '' && type != String)
+  def _nil_like?(value, type, coerce_empty_to_nil)
+    return true if value.nil?
+    return true if value == '' && coerce_empty_to_nil
+    return true if value == '' && type != String
+
+    false
+  end
+
+  def coerce_nil(value, type, coerce_empty_to_nil)
+    return nil if _nil_like?(value, type, coerce_empty_to_nil)
+
+    value
   end
 end

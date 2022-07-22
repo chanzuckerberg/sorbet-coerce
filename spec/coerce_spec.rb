@@ -47,6 +47,14 @@ describe TypeCoerce do
       const :myenum, TestEnum
     end
 
+    class WithNilableString < T::Struct
+      const :myvalue, T.nilable(String)
+    end
+
+    class WithNilableInteger < T::Struct
+      const :myvalue, T.nilable(Integer)
+    end
+
     class CustomType
       attr_reader :a
 
@@ -235,7 +243,7 @@ describe TypeCoerce do
     end
   end
 
-  context 'when dealing with arries' do
+  context 'when dealing with arrays' do
     it 'coreces correctly' do
       expect(TypeCoerce[T::Array[Integer]].new.from(nil)).to eql []
       expect(TypeCoerce[T::Array[Integer]].new.from('')).to eql []
@@ -375,6 +383,30 @@ describe TypeCoerce do
         expect do
           TypeCoerce['a'].new.from('a', raise_coercion_error: false)
         end.to raise_error(/must be an T::Types::Base/i)
+      end
+    end
+  end
+
+  context 'when dealing with coercing empty strings' do
+    context 'when flag is set' do
+      it 'coerces empty strings to nil from a simple type' do
+        expect(TypeCoerce[T.nilable(String)].new.from('', coerce_empty_to_nil: true)).to be_nil
+      end
+
+      it 'coerces empty strings to nil from a struct' do
+        coerced = TypeCoerce[WithNilableString].new.from({myvalue: ''}, coerce_empty_to_nil: true)
+        expect(coerced.myvalue).to eql(nil)
+      end
+    end
+
+    context 'when flag is not set' do
+      it 'coerces empty strings to nil from a simple type' do
+        expect(TypeCoerce[T.nilable(String)].new.from('', coerce_empty_to_nil: false)).to eql('')
+      end
+
+      it 'coerces empty strings to nil from a struct' do
+        coerced = TypeCoerce[WithNilableString].new.from({myvalue: ''}, coerce_empty_to_nil: false)
+        expect(coerced.myvalue).to eql('')
       end
     end
   end
