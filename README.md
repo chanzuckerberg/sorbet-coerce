@@ -44,6 +44,8 @@ T.reveal_type(converted) # <Type>
 
 We don't support
 - Experimental features (tuples and shapes)
+- passing in variables *as* types (ex `TypeCoerce[var]`) - please use at your own risk!
+    - for more information, see [this Slack thread in the Sorbet Slack](https://sorbet-ruby.slack.com/archives/CHN2L03NH/p1658784723127889)
 
 ### Examples
 - Simple Types
@@ -87,10 +89,17 @@ TypeCoerce[T.nilable(Integer)].new.from(nil)
 TypeCoerce[T.nilable(Integer)].new.from('')
 # => nil
 ```
-But, `''` will be converted to an empty string for `T.nilable(String)` type
+
+The behaviour for converting `''` for the `T.nilable(String)` type depends on an option flag called `coerce_empty_to_nil` (new in [v0.6.0](https://github.com/chanzuckerberg/sorbet-coerce/releases/tag/v0.6.0)):
+
 ```ruby
+# default behaviour
 TypeCoerce[T.nilable(String)].new.from('')
 # => ""
+
+# using the coerce_empty_to_nil flag
+TypeCoerce[T.nilable(String)].new.from('', coerce_empty_to_nil: true)
+# => nil
 ```
 
 - `T::Array`
