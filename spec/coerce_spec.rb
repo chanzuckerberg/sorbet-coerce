@@ -84,6 +84,18 @@ describe TypeCoerce do
       const :arr, [Integer, String, Integer]
     end
 
+    class Value1 < T::Struct
+      const :prop_1, Integer
+    end
+
+    class Value2 < T::Struct
+      const :prop_2, Integer
+    end
+
+    class WithUnsupportedNestedUnion < T::Struct
+      const :value, T.any(Value1, Value2)
+    end
+
     class CustomString < String
     end
 
@@ -238,6 +250,20 @@ describe TypeCoerce do
 
         expect do
           TypeCoerce[WithUnsupportedUnion].new.from({union: nil})
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'unsupported nested union' do
+      it 'keeps the values as-is' do
+        coerced = TypeCoerce[WithUnsupportedNestedUnion].new.from({value: { prop_1: 1 }})
+        expect(coerced.prop_1).to eq(1)
+
+        coerced = TypeCoerce[WithUnsupportedNestedUnion].new.from({value: { prop_2: 2 }})
+        expect(coerced.prop_2).to eq(1)
+
+        expect do
+          TypeCoerce[WithUnsupportedNestedUnion].new.from({value: { prop_3: 3 }})
         end.to raise_error(TypeError)
       end
     end
