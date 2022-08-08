@@ -104,7 +104,7 @@ class TypeCoerce::Converter
       end
 
       return _convert(value, t, true, coerce_empty_to_nil)
-    rescue TypeCoerce::CoercionError
+    rescue TypeCoerce::CoercionError, TypeCoerce::ShapeError
       # Keep trying to coerce
     end
 
