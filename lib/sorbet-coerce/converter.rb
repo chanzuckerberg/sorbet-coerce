@@ -59,28 +59,7 @@ class TypeCoerce::Converter
     elsif type.is_a?(T::Types::Simple)
       _convert(value, type.raw_type, raise_coercion_error, coerce_empty_to_nil)
     elsif type.is_a?(T::Types::Union)
-      true_idx = T.let(nil, T.nilable(Integer))
-      false_idx = T.let(nil, T.nilable(Integer))
-      nil_idx = T.let(nil, T.nilable(Integer))
-
-      type.types.each_with_index do |t, i|
-        nil_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == NilClass
-        true_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == TrueClass
-        false_idx = i if t.is_a?(T::Types::Simple) && t.raw_type == FalseClass
-      end
-
-      return value unless (
-        (!true_idx.nil? && !false_idx.nil? && !nil_idx.nil?) || # T.nilable(T::Boolean)
-        (type.types.length == 2 && (
-          !nil_idx.nil? || (!true_idx.nil? && !false_idx.nil?) # T.nilable || T::Boolean
-        ))
-      )
-
-      if !true_idx.nil? && !false_idx.nil?
-        _convert_simple(value, T::Boolean, raise_coercion_error, coerce_empty_to_nil)
-      else
-        _convert(value, type.types[nil_idx == 0 ? 1 : 0], raise_coercion_error, coerce_empty_to_nil)
-      end
+      _convert_union(value, type, raise_coercion_error, coerce_empty_to_nil)
     elsif type.is_a?(T::Types::TypedHash)
       return {} if _nil_like?(value, type, coerce_empty_to_nil)
 
@@ -114,6 +93,25 @@ class TypeCoerce::Converter
       else
         value
       end
+    end
+  end
+
+  def _convert_union(value, type, raise_coercion_error, coerce_empty_to_nil)
+    type.types.each do |t|
+      # Always raise coercion error so that we can handle it here
+      if t.is_a?(T::Types::Simple) && (t.raw_type == NilClass || t.raw_type == TrueClass || t.raw_type == FalseClass)
+        return _convert_simple(value, T::Boolean, true, coerce_empty_to_nil)
+      end
+
+      return _convert(value, t, true, coerce_empty_to_nil)
+    rescue TypeCoerce::CoercionError
+      # Keep trying to coerce
+    end
+
+    if raise_coercion_error
+      raise TypeCoerce::CoercionError.new(value, type)
+    else
+      value
     end
   end
 
