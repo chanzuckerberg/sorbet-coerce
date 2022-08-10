@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.files         += Dir.glob('spec/**/*')
   s.files         += Dir.glob('rbi/**/*')
 
-  s.required_ruby_version = '>= 2.4.0'
+  s.required_ruby_version = '>= 2.7.0'
 
   s.add_runtime_dependency 'polyfill', '~> 1.8'
   s.add_runtime_dependency 'safe_type', '~> 1.1', '>= 1.1.1'
