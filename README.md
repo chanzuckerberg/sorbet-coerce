@@ -10,7 +10,7 @@ It provides a simple and generic way of coercing types in a sorbet-typed project
 ## Installation
 1. Follow the steps [here](https://sorbet.org/docs/adopting) to set up the latest version of Sorbet and run `srb tc`.
 2. Add `sorbet-coerce` to your Gemfile and install them with `Bundler`.
-```
+```ruby
 # -- Gemfile --
 
 gem 'sorbet-coerce'
