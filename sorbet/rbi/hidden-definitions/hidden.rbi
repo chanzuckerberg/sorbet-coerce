@@ -2953,10 +2953,6 @@ class Encoding
   def self._load(arg); end
 end
 
-module Enumerable
-  def sum(*arg); end
-end
-
 class Enumerator
   def +(arg); end
 
