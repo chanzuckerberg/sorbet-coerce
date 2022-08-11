@@ -71,13 +71,13 @@ describe TypeCoerce do
       # Does not respond to new
     end
 
-    class WithSupportedUnion < T::Struct
+    class WithNilableUnion < T::Struct
       const :nilable, T.nilable(String)
       const :nilable_boolean, T.nilable(T::Boolean)
     end
 
-    class WithUnsupportedUnion < T::Struct
-      const :union, T.any(String, Integer)
+    class WithComplexUnion < T::Struct
+      const :union, T.any(WithNilableUnion, Integer, String)
     end
 
     class WithFixedArray < T::Struct
@@ -217,9 +217,9 @@ describe TypeCoerce do
   end
 
   context 'when given union types' do
-    context 'supported union types' do
+    context 'nilable types' do
       it 'coerces correctly' do
-        coerced = TypeCoerce[WithSupportedUnion].new.from({
+        coerced = TypeCoerce[WithNilableUnion].new.from({
           nilable: 2,
           nilable_boolean: 'true'
         })
@@ -228,16 +228,20 @@ describe TypeCoerce do
       end
     end
 
-    context 'unsupported union types' do
-      it 'keeps the values as-is' do
-        coerced = TypeCoerce[WithUnsupportedUnion].new.from({union: 'a'})
+    context 'when give complex union types' do
+      it 'nested types' do
+        coerced = TypeCoerce[WithComplexUnion].new.from({union: 'a'})
         expect(coerced.union).to eq('a')
 
-        coerced = TypeCoerce[WithUnsupportedUnion].new.from({union: 2})
+        coerced = TypeCoerce[WithComplexUnion].new.from({union: 2})
         expect(coerced.union).to eq(2)
 
+        coerced = TypeCoerce[WithComplexUnion].new.from({union: { nilable: "Test", nilable_boolean: nil } })
+        expect(coerced.union.nilable).to eq("Test")
+        expect(coerced.union.nilable_boolean).to eq(nil)
+
         expect do
-          TypeCoerce[WithUnsupportedUnion].new.from({union: nil})
+          TypeCoerce[WithComplexUnion].new.from({union: nil})
         end.to raise_error(TypeError)
       end
     end
