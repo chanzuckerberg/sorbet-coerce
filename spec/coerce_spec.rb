@@ -183,6 +183,7 @@ describe TypeCoerce do
       T.assert_type!(TypeCoerce[Integer].new.from(1), Integer)
       T.assert_type!(TypeCoerce[Integer].new.from('1.0'), Integer)
       T.assert_type!(TypeCoerce[T.nilable(Integer)].new.from(nil), T.nilable(Integer))
+      T.assert_type!(TypeCoerce[BigDecimal].new.from('1.0'), BigDecimal)
     end
 
     it 'coreces correctly' do
@@ -200,6 +201,8 @@ describe TypeCoerce do
       expect(TypeCoerce[T.nilable(Integer)].new.from('')).to be nil
       expect{TypeCoerce[T.nilable(Integer)].new.from([])}.to raise_error(TypeCoerce::CoercionError)
       expect(TypeCoerce[T.nilable(String)].new.from('')).to eql ''
+
+      expect(TypeCoerce[BigDecimal].new.from(123.321)).to eql BigDecimal(123.321, 0)
     end
   end
 

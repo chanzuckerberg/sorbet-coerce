@@ -137,7 +137,7 @@ class TypeCoerce::Converter
     elsif value.is_a?(type)
       return value
     elsif type == BigDecimal
-      return BigDecimal(value)
+      return BigDecimal(value, 0)
     elsif PRIMITIVE_TYPES.include?(type)
       safe_type_rule = SafeType.const_get(type.name).strict
     else
