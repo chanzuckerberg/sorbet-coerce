@@ -1,4 +1,4 @@
-# typed: ignore
+# typed: true
 require 'polyfill'
 require 'safe_type'
 require 'set'
@@ -13,16 +13,25 @@ module TypeCoerce
 end
 
 class TypeCoerce::Converter
+  extend T::Sig
+  extend T::Generic
+
+  Elem = type_member # this is the generic passed in to the converter
+
+  sig {params(type: Elem).void}
   def initialize(type)
     @type = type
   end
+
+  sig {returns(Elem)}
+  def type; @type; end
 
   def new
     self
   end
 
   def to_s
-    "#{name}#[#{@type.to_s}]"
+    "#{name}#[#{self.type.to_s}]"
   end
 
   def from(args, raise_coercion_error: nil, coerce_empty_to_nil: false)
@@ -30,7 +39,7 @@ class TypeCoerce::Converter
       raise_coercion_error = TypeCoerce::Configuration.raise_coercion_error
     end
 
-    T.let(_convert(args, @type, raise_coercion_error, coerce_empty_to_nil), @type)
+    T.let(_convert(args, self.type, raise_coercion_error, coerce_empty_to_nil), self.type)
   end
 
   private
