@@ -45,6 +45,7 @@ describe TypeCoerce do
 
     class WithEnum < T::Struct
       const :myenum, TestEnum
+      const :nilable_enum, T.nilable(TestEnum)
     end
 
     class WithNilableString < T::Struct
@@ -326,6 +327,11 @@ describe TypeCoerce do
     it 'coerces a serialized enum correctly' do
       coerced = TypeCoerce[WithEnum].new.from({myenum: "test"})
       expect(coerced.myenum).to eq(TestEnum::Test)
+    end
+
+    it 'coerces a nilable enum correctly' do
+      coerced = TypeCoerce[WithEnum].new.from({myenum: 'test', nilable_enum: nil})
+      expect(coerced.nilable_enum).to eq(nil)
     end
 
     it 'handles a real enum correctly' do
